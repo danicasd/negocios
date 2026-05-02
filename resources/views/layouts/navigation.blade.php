@@ -1,14 +1,25 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-200">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+        <div class="flex justify-between items-center h-20">
             <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                    </a>
-                </div>
+               
+                <!-- Logo + Nombre -->
+                <a href="/" class="flex items-center gap-3">
+                    <img src="{{ asset('imagenes/logo-servihogar.png') }}" alt="Logo ServiHogar" class="h-12 w-auto">
+
+                    <div>
+                        <h1 class="text-2xl font-bold text-[#1E3A8A]">
+                            Servi<span class="text-[#16A34A]">Hogar</span>
+                        </h1>
+
+                        <p class="text-xs text-[#334155]">Tu hogar en buenas manos</p>
+                    </div>
+                </a>
+
+                
+
+               
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
