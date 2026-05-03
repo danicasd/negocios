@@ -1,52 +1,161 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrarse | ServiHogar</title>
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+<body class="min-h-screen bg-[#F8FAFC]">
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+    <main class="min-h-screen grid md:grid-cols-2">
 
-            <x-text-input id="password" class="block mt-1 w-full"
+        <!-- Lado izquierdo -->
+        <section class="hidden md:flex bg-[#1E3A8A] text-white p-12 flex-col justify-between">
+            <div>
+                <a href="/" class="flex items-center gap-3">
+                    <img src="{{ asset('imagenes/logo-servihogar.png') }}" alt="ServiHogar" class="h-14 bg-white rounded-xl p-1">
+                    <div>
+                        <h1 class="text-3xl font-bold">
+                            Servi<span class="text-[#16A34A]">Hogar</span>
+                        </h1>
+                        <p class="text-blue-100">Tu hogar en buenas manos</p>
+                    </div>
+                </a>
+            </div>
+
+            <div>
+                <h2 class="text-5xl font-bold leading-tight mb-6">
+                    Crea tu cuenta y solicita servicios fácilmente
+                </h2>
+
+                <p class="text-lg text-blue-100">
+                    Regístrate para cotizar, agendar y dar seguimiento a tus servicios del hogar.
+                </p>
+            </div>
+
+            <p class="text-blue-100 text-sm">
+                © 2026 ServiHogar. Todos los derechos reservados.
+            </p>
+        </section>
+
+        <!-- Lado derecho -->
+        <section class="flex items-center justify-center px-6 py-12">
+            <div class="w-full max-w-md">
+
+                <div class="text-center mb-8">
+                    <a href="/">
+                        <img src="{{ asset('imagenes/logo-servihogar.png') }}" alt="ServiHogar" class="h-20 mx-auto mb-4">
+                    </a>
+
+                    <h2 class="text-3xl font-bold text-[#1E3A8A]">
+                        Crear cuenta
+                    </h2>
+
+                    <p class="text-[#334155] mt-2">
+                        Regístrate para solicitar servicios en ServiHogar
+                    </p>
+                </div>
+
+                <form method="POST" action="{{ route('register') }}" class="space-y-5">
+                    @csrf
+
+                    <!-- Nombre -->
+                    <div>
+                        <label for="name" class="block text-sm font-semibold text-[#1E3A8A] mb-2">
+                            Nombre completo
+                        </label>
+
+                        <input
+                            id="name"
+                            type="text"
+                            name="name"
+                            value="{{ old('name') }}"
+                            required
+                            autofocus
+                            autocomplete="name"
+                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB]"
+                        >
+
+                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-[#1E3A8A] mb-2">
+                            Correo electrónico
+                        </label>
+
+                        <input
+                            id="email"
+                            type="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            required
+                            autocomplete="username"
+                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB]"
+                        >
+
+                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div>
+                        <label for="password" class="block text-sm font-semibold text-[#1E3A8A] mb-2">
+                            Contraseña
+                        </label>
+
+                        <input
+                            id="password"
                             type="password"
                             name="password"
-                            required autocomplete="new-password" />
+                            required
+                            autocomplete="new-password"
+                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB]"
+                        >
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                    </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+                    <!-- Confirmar contraseña -->
+                    <div>
+                        <label for="password_confirmation" class="block text-sm font-semibold text-[#1E3A8A] mb-2">
+                            Confirmar contraseña
+                        </label>
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
+                        <input
+                            id="password_confirmation"
                             type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
+                            name="password_confirmation"
+                            required
+                            autocomplete="new-password"
+                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB]"
+                        >
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
+                        <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                    </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
+                    <button
+                        type="submit"
+                        class="w-full bg-[#2563EB] text-white py-3 rounded-xl hover:bg-[#1E3A8A] font-semibold transition"
+                    >
+                        Crear cuenta
+                    </button>
 
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+                    <p class="text-center text-sm text-[#334155]">
+                        ¿Ya tienes cuenta?
+                        <a href="{{ route('login') }}" class="text-[#16A34A] font-semibold hover:underline">
+                            Inicia sesión aquí
+                        </a>
+                    </p>
+                </form>
+
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>
