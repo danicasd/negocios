@@ -7,21 +7,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Technician extends Model
+class Address extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'phone',
-        'speciality',
-        'availability',
-        'status',
+        'user_id',
+        'calle',
+        'alcaldia',
+        'estado',
+        'colonia',
+        'postal_code',
+        'references',
+        'external_number',
+        'internal_number',
     ];
 
-    protected $casts = [
-        'status' => 'boolean',
-    ];
+    //Relación uno a muchos inversa
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     //Relación uno a muchos
     public function bookings()

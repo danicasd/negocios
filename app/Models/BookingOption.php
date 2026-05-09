@@ -7,32 +7,30 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-
-class Review extends Model
+class BookingOption extends Model
 {
-     use HasFactory;
+    use HasFactory;
 
     protected $fillable = [
         'booking_id',
-        'user_id',
-        'rating',
-        'comment',
-        'status',
+        'service_option_id',
+        'option_name',
+        'extra_price',
     ];
 
     protected $casts = [
-        'status' => 'boolean',
+        'extra_price' => 'decimal:2',
     ];
 
-    //Relacion uno a mucchos inversa
+    //Relación uno a muchos inversa
     public function booking()
     {
         return $this->belongsTo(Booking::class);
     }
 
-    //Relacion uno a mucchos inversa
-    public function user()
+    //Relación uno a muchos inversa
+    public function serviceOption()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(ServiceOption::class);
     }
 }

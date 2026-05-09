@@ -138,47 +138,6 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/cotizar/{servicio}', [ClienteController::class, 'cotizar'])
-        ->name('cliente.cotizar');
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/catalogo', [ClienteController::class, 'catalogo'])
-        ->name('cliente.catalogo');
-
-    Route::get('/cotizar/{servicio}', [ClienteController::class, 'cotizar'])
-        ->name('cliente.cotizar');
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/direccion', [ClienteController::class, 'direccion'])
-        ->name('cliente.direccion');
-});
-
-Route::get('/agendar', function () {
-    return 'Vista agendar';
-})->middleware(['auth'])->name('cliente.agendar');
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/agendar', [ClienteController::class, 'agendar'])
-        ->name('cliente.agendar');
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/checkout', [ClienteController::class, 'checkout'])
-        ->name('cliente.checkout');
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/pago', [ClienteController::class, 'pago'])
-        ->name('cliente.pago');
-});
-
-Route::post('/direccion', [ClienteController::class, 'guardarDireccion'])
-    ->name('cliente.direccion.guardar');
-
-
 
 
 require __DIR__.'/auth.php';
