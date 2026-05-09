@@ -1,9 +1,9 @@
 <x-app-layout>
     <div class="min-h-screen bg-gray-50">
-        <section class="bg-gradient-to-br from-blue-50 via-white to-green-50 py-14 ">
+        <section class="bg-gradient-to-br from-blue-50 via-white to-green-50 py-14">
             <div class="max-w-7xl mx-auto px-6">
                 <div class="max-w-3xl">
-                    <span class="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold mb-4 ">
+                    <span class="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
                         Catálogo para clientes
                     </span>
 
@@ -19,242 +19,138 @@
         </section>
 
         <section class="max-w-7xl mx-auto px-6 py-10">
+
             <!-- Filtros visuales -->
             <div class="flex flex-wrap gap-3 mb-10">
-                <button class="bg-blue-600 text-white px-5 py-2 rounded-full font-semibold shadow-sm">
+                <button 
+                    class="filtro-categoria bg-blue-600 text-white px-5 py-2 rounded-full font-semibold shadow-sm"
+                    data-categoria="todos">
                     Todos
                 </button>
-                <button class="bg-white text-gray-700 px-5 py-2 rounded-full font-semibold border hover:border-blue-500 hover:text-blue-600 transition">
-                    Plomería
-                </button>
-                <button class="bg-white text-gray-700 px-5 py-2 rounded-full font-semibold border hover:border-blue-500 hover:text-blue-600 transition">
-                    Electricidad
-                </button>
-                <button class="bg-white text-gray-700 px-5 py-2 rounded-full font-semibold border hover:border-blue-500 hover:text-blue-600 transition">
-                    Limpieza
-                </button>
-                <button class="bg-white text-gray-700 px-5 py-2 rounded-full font-semibold border hover:border-blue-500 hover:text-blue-600 transition">
-                    Soporte técnico
-                </button>
+
+                @foreach($categorias as $categoria)
+                    <button 
+                        class="filtro-categoria bg-white text-gray-700 px-5 py-2 rounded-full font-semibold border hover:border-blue-500 hover:text-blue-600 transition"
+                        data-categoria="{{ Str::slug($categoria->name) }}">
+                        {{ $categoria->name }}
+                    </button>
+                @endforeach
             </div>
 
             <!-- Grid de servicios -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
-                <!-- Card -->
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition">
-                    <div class="h-40 bg-blue-50 flex items-center justify-center">
-                        <span class="text-6xl">🔧</span>
-                    </div>
+                @forelse($categorias as $categoria)
+                    @foreach($categoria->services as $servicio)
 
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                                Plomería
-                            </span>
-                            <span class="text-sm text-gray-500">
-                                1-2 hrs
-                            </span>
-                        </div>
+                        <div class="servicio-card bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition" data-categoria="{{ Str::slug($categoria->name) }}">
 
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">
-                            Reparación de fugas
-                        </h3>
+                            <div class="h-40 bg-blue-50 flex items-center justify-center">
+                                <span class="text-6xl">
+                                    @switch($categoria->name)
+                                        @case('Plomería')
+                                            🚿
+                                            @break
 
-                        <p class="text-gray-600 mb-5">
-                            Solución para fugas en baños, cocinas, lavabos y tuberías.
-                        </p>
+                                        @case('Electricidad')
+                                            💡
+                                            @break
 
-                        <div class="flex items-end justify-between">
-                            <div>
-                                <p class="text-sm text-gray-500">Desde</p>
-                                <p class="text-2xl font-bold text-green-600">$350</p>
+                                        @case('Limpieza')
+                                            🧹
+                                            @break
+
+                                        @case('Soporte técnico')
+                                            💻
+                                            @break
+
+                                        @case('Cámaras')
+                                            📹
+                                            @break
+
+                                        @case('Mantenimiento')
+                                            🛠️
+                                            @break
+
+                                        @default
+                                            🏠
+                                    @endswitch
+                                </span>
                             </div>
 
-                            <a href="{{ route('cliente.cotizar', 'reparacion-de-fugas') }}"
-                               class="bg-blue-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
-                                Cotizar
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                                        {{ $categoria->name }}
+                                    </span>
+                                </div>
 
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition">
-                    <div class="h-40 bg-green-50 flex items-center justify-center">
-                        <span class="text-6xl">🚿</span>
-                    </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">
+                                    {{ $servicio->name }}
+                                </h3>
 
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                                Plomería
-                            </span>
-                            <span class="text-sm text-gray-500">1-3 hrs</span>
-                        </div>
+                                <p class="text-gray-600 mb-5">
+                                    {{ $servicio->description }}
+                                </p>
 
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">
-                            Destape de drenaje
-                        </h3>
+                                <div class="flex items-end justify-between">
+                                    <div>
+                                        <p class="text-sm text-gray-500">Desde</p>
+                                        <p class="text-2xl font-bold text-green-600">
+                                            ${{ number_format($servicio->base_price, 2) }}
+                                        </p>
+                                    </div>
 
-                        <p class="text-gray-600 mb-5">
-                            Destape de lavabos, fregaderos, coladeras y tuberías.
-                        </p>
-
-                        <div class="flex items-end justify-between">
-                            <div>
-                                <p class="text-sm text-gray-500">Desde</p>
-                                <p class="text-2xl font-bold text-green-600">$450</p>
+                                    <a href="{{ route('cliente.cotizar', $servicio->id) }}"
+                                       class="bg-blue-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
+                                        Cotizar
+                                    </a>
+                                </div>
                             </div>
-
-                            <a href="{{ route('cliente.cotizar', 'destape-de-drenaje') }}"
-                               class="bg-blue-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
-                                Cotizar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition">
-                    <div class="h-40 bg-yellow-50 flex items-center justify-center">
-                        <span class="text-6xl">💡</span>
-                    </div>
-
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                                Electricidad
-                            </span>
-                            <span class="text-sm text-gray-500">1-2 hrs</span>
                         </div>
 
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">
-                            Instalación eléctrica
-                        </h3>
-
-                        <p class="text-gray-600 mb-5">
-                            Instalación de contactos, apagadores, lámparas y revisiones básicas.
+                    @endforeach
+                @empty
+                    <div class="col-span-full bg-white rounded-3xl border border-gray-100 p-10 text-center">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">
+                            Aún no hay servicios disponibles
+                        </h2>
+                        <p class="text-gray-600">
+                            Cuando se registren categorías y servicios, aparecerán aquí.
                         </p>
-
-                        <div class="flex items-end justify-between">
-                            <div>
-                                <p class="text-sm text-gray-500">Desde</p>
-                                <p class="text-2xl font-bold text-green-600">$400</p>
-                            </div>
-
-                            <a href="{{ route('cliente.cotizar', 'instalacion-electrica') }}"
-                               class="bg-blue-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
-                                Cotizar
-                            </a>
-                        </div>
                     </div>
-                </div>
-
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition">
-                    <div class="h-40 bg-purple-50 flex items-center justify-center">
-                        <span class="text-6xl">🧹</span>
-                    </div>
-
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                                Limpieza
-                            </span>
-                            <span class="text-sm text-gray-500">2-4 hrs</span>
-                        </div>
-
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">
-                            Limpieza general
-                        </h3>
-
-                        <p class="text-gray-600 mb-5">
-                            Limpieza completa para casas, departamentos y espacios pequeños.
-                        </p>
-
-                        <div class="flex items-end justify-between">
-                            <div>
-                                <p class="text-sm text-gray-500">Desde</p>
-                                <p class="text-2xl font-bold text-green-600">$500</p>
-                            </div>
-
-                            <a href="{{ route('cliente.cotizar', 'limpieza-general') }}"
-                               class="bg-blue-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
-                                Cotizar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition">
-                    <div class="h-40 bg-red-50 flex items-center justify-center">
-                        <span class="text-6xl">🛠️</span>
-                    </div>
-
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                                Mantenimiento
-                            </span>
-                            <span class="text-sm text-gray-500">2-3 hrs</span>
-                        </div>
-
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">
-                            Pintura básica
-                        </h3>
-
-                        <p class="text-gray-600 mb-5">
-                            Pintura básica por habitación con diagnóstico previo.
-                        </p>
-
-                        <div class="flex items-end justify-between">
-                            <div>
-                                <p class="text-sm text-gray-500">Desde</p>
-                                <p class="text-2xl font-bold text-green-600">$650</p>
-                            </div>
-
-                            <a href="{{ route('cliente.cotizar', 'pintura-basica') }}"
-                               class="bg-blue-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
-                                Cotizar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition">
-                    <div class="h-40 bg-indigo-50 flex items-center justify-center">
-                        <span class="text-6xl">💻</span>
-                    </div>
-
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                                Soporte técnico
-                            </span>
-                            <span class="text-sm text-gray-500">1-2 hrs</span>
-                        </div>
-
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">
-                            Mantenimiento de equipo
-                        </h3>
-
-                        <p class="text-gray-600 mb-5">
-                            Revisión, limpieza y diagnóstico básico de computadora.
-                        </p>
-
-                        <div class="flex items-end justify-between">
-                            <div>
-                                <p class="text-sm text-gray-500">Desde</p>
-                                <p class="text-2xl font-bold text-green-600">$450</p>
-                            </div>
-
-                            <a href="{{ route('cliente.cotizar', 'mantenimiento-de-equipo') }}"
-                               class="bg-blue-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
-                                Cotizar
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                @endforelse
 
             </div>
         </section>
     </div>
 </x-app-layout>
+
+<script>
+    const botonesFiltro = document.querySelectorAll('.filtro-categoria');
+    const tarjetasServicio = document.querySelectorAll('.servicio-card');
+
+    botonesFiltro.forEach(boton => {
+        boton.addEventListener('click', () => {
+            const categoriaSeleccionada = boton.dataset.categoria;
+
+            tarjetasServicio.forEach(tarjeta => {
+                const categoriaTarjeta = tarjeta.dataset.categoria;
+
+                if (categoriaSeleccionada === 'todos' || categoriaSeleccionada === categoriaTarjeta) {
+                    tarjeta.classList.remove('hidden');
+                } else {
+                    tarjeta.classList.add('hidden');
+                }
+            });
+
+            botonesFiltro.forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-700', 'border');
+            });
+
+            boton.classList.remove('bg-white', 'text-gray-700', 'border');
+            boton.classList.add('bg-blue-600', 'text-white');
+        });
+    });
+</script>

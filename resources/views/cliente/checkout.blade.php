@@ -30,14 +30,18 @@
                             <div>
                                 <p class="text-sm text-gray-500">Servicio</p>
                                 <p class="text-lg font-semibold text-gray-900">
-                                    Reparación de fugas
+                                    {{ $cotizacion['service_name'] }}
                                 </p>
                             </div>
 
                             <div>
                                 <p class="text-sm text-gray-500">Dirección</p>
                                 <p class="text-lg font-semibold text-gray-900">
-                                    Av. Universidad 3000, Copilco Universidad, Coyoacán, CDMX
+                                    {{ $address->calle }} {{ $address->external_number }}
+                                    @if($address->internal_number)
+                                        Int. {{ $address->internal_number }}
+                                    @endif
+                                    , {{ $address->colonia }}, {{ $address->alcaldia }}, {{ $address->estado }}, CP {{ $address->postal_code }}
                                 </p>
                             </div>
 
@@ -45,17 +49,26 @@
                                 <div>
                                     <p class="text-sm text-gray-500">Fecha</p>
                                     <p class="font-semibold text-gray-900">
-                                        17 de mayo de 2026
+                                        {{ \Carbon\Carbon::parse($agenda['fecha'])->translatedFormat('d \d\e F \d\e Y') }}
                                     </p>
                                 </div>
 
                                 <div>
                                     <p class="text-sm text-gray-500">Hora</p>
                                     <p class="font-semibold text-gray-900">
-                                        10:00 AM
+                                        {{ $agenda['hora'] }}
                                     </p>
                                 </div>
                             </div>
+
+                            @if(!empty($agenda['comentarios']))
+                                <div>
+                                    <p class="text-sm text-gray-500">Comentarios</p>
+                                    <p class="font-semibold text-gray-900">
+                                        {{ $agenda['comentarios'] }}
+                                    </p>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -67,17 +80,29 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div class="rounded-2xl bg-gray-50 border border-gray-100 p-5">
                                 <p class="text-sm text-gray-500">Urgencia</p>
-                                <p class="font-semibold text-gray-900 mt-1">Normal</p>
+                                <p class="font-semibold text-gray-900 mt-1">
+                                    {{ $cotizacion['urgencia'] > 0 ? 'Urgente' : 'Normal' }}
+                                </p>
                             </div>
 
                             <div class="rounded-2xl bg-gray-50 border border-gray-100 p-5">
                                 <p class="text-sm text-gray-500">Complejidad</p>
-                                <p class="font-semibold text-gray-900 mt-1">Básico</p>
+                                <p class="font-semibold text-gray-900 mt-1">
+                                    @if($cotizacion['complejidad'] == 0)
+                                        Básico
+                                    @elseif($cotizacion['complejidad'] == 100)
+                                        Medio
+                                    @else
+                                        Alto
+                                    @endif
+                                </p>
                             </div>
 
                             <div class="rounded-2xl bg-gray-50 border border-gray-100 p-5">
                                 <p class="text-sm text-gray-500">Zona</p>
-                                <p class="font-semibold text-gray-900 mt-1">Estándar</p>
+                                <p class="font-semibold text-gray-900 mt-1">
+                                    {{ $cotizacion['zona'] > 0 ? 'Zona lejana' : 'Estándar' }}
+                                </p>
                             </div>
                         </div>
 
@@ -91,6 +116,12 @@
                 </div>
 
                 <!-- Resumen de pago -->
+                @php
+                    $porcentajeAnticipo = 0.20;
+                    $anticipo = $cotizacion['total'] * $porcentajeAnticipo;
+                    $restante = $cotizacion['total'] - $anticipo;
+                @endphp
+
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 h-fit">
                     <h2 class="text-xl font-bold text-gray-900 mb-6">
                         Resumen de pago
@@ -99,47 +130,95 @@
                     <div class="space-y-4 text-sm">
                         <div class="flex justify-between">
                             <span class="text-gray-500">Precio base</span>
-                            <span class="font-semibold text-gray-900">$300</span>
+                            <span class="font-semibold text-gray-900">
+                                ${{ number_format($cotizacion['precio_base'], 2) }}
+                            </span>
                         </div>
 
                         <div class="flex justify-between">
                             <span class="text-gray-500">Urgencia</span>
-                            <span class="font-semibold text-gray-900">$0</span>
+                            <span class="font-semibold text-gray-900">
+                                ${{ number_format($cotizacion['urgencia'], 2) }}
+                            </span>
                         </div>
 
                         <div class="flex justify-between">
                             <span class="text-gray-500">Complejidad</span>
-                            <span class="font-semibold text-gray-900">$0</span>
+                            <span class="font-semibold text-gray-900">
+                                ${{ number_format($cotizacion['complejidad'], 2) }}
+                            </span>
                         </div>
 
                         <div class="flex justify-between">
                             <span class="text-gray-500">Zona</span>
-                            <span class="font-semibold text-gray-900">$150</span>
+                            <span class="font-semibold text-gray-900">
+                                ${{ number_format($cotizacion['zona'], 2) }}
+                            </span>
                         </div>
                     </div>
 
-                    <div class="border-t border-gray-100 mt-6 pt-6 flex justify-between items-center">
-                        <span class="text-gray-800 font-semibold">
-                            Total
-                        </span>
+                    <div class="border-t border-gray-100 mt-6 pt-6 space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700 font-semibold">
+                                Costo estimado
+                            </span>
 
-                        <span class="text-3xl font-bold text-green-600">
-                            $450
-                        </span>
+                            <span class="text-xl font-bold text-gray-900">
+                                ${{ number_format($cotizacion['total'], 2) }}
+                            </span>
+                        </div>
+
+                        <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-blue-700 font-semibold">
+                                    Anticipo de confirmación
+                                </span>
+
+                                <span class="text-2xl font-bold text-blue-600">
+                                    ${{ number_format($anticipo, 2) }}
+                                </span>
+                            </div>
+
+                            <p class="text-xs text-blue-600 mt-2">
+                                Corresponde al 20% del costo estimado del servicio.
+                            </p>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500">
+                                Restante al finalizar
+                            </span>
+
+                            <span class="font-semibold text-gray-900">
+                                ${{ number_format($restante, 2) }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-yellow-50 border border-yellow-200 rounded-2xl p-4">
+                        <p class="text-sm text-yellow-800 font-semibold mb-2">
+                            Política de anticipo
+                        </p>
+
+                        <p class="text-xs text-yellow-800 leading-relaxed">
+                            El anticipo garantiza la reserva del servicio y la asignación del técnico.
+                            Las cancelaciones o reprogramaciones deben realizarse con al menos 48 horas
+                            de anticipación para aplicar al reembolso. Si el técnico acude al domicilio
+                            y el cliente no se encuentra disponible, el anticipo no será reembolsable.
+                        </p>
                     </div>
 
                     <div class="mt-8">
                         <a href="{{ route('cliente.pago') }}"
                         class="block w-full text-center bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition shadow-sm">
-                            Confirmar y pagar
+                            Pagar anticipo
                         </a>
 
                         <a href="{{ route('cliente.agendar') }}"
-                        class="block text-center mt-4 text-blue-600 hover:text-blue-700 font-medium font-semibold transition">
+                        class="block text-center mt-4 text-blue-600 hover:text-blue-700 font-semibold transition">
                             Volver a editar
                         </a>
                     </div>
-
                 </div>
 
             </div>

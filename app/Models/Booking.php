@@ -17,6 +17,7 @@ class Booking extends Model
         'address_id',
         'scheduled_at',
         'status',
+        'payment_status',
         'base_price',
         'extra_total',
         'total',
@@ -65,9 +66,9 @@ class Booking extends Model
     }
 
     //Relación uno a uno
-    public function payment()
+    public function payments()
     {
-        return $this->hasOne(Payment::class);
+        return $this->hasMany(Payment::class);
     }
 
     //Relación uno a uno

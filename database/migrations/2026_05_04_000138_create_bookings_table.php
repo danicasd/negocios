@@ -29,6 +29,12 @@ return new class extends Migration
             $table->dateTime('scheduled_at');
 
             $table->string('status', 45)->default('pendiente');
+            $table->enum('payment_status', [
+                'pending_deposit',
+                'deposit_paid',
+                'paid',
+                'refunded',
+            ])->default('pending_deposit');
 
             $table->decimal('base_price', 10, 2);
             $table->decimal('extra_total', 10, 2)->default(0);
