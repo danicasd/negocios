@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('service_options', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('service_id')->references('id')->on('services')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('service_id')
+                ->constrained('services')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->string('name');
+            $table->string('type', 45);
+            $table->decimal('extra_price', 10, 2)->default(0);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

@@ -14,7 +14,11 @@ return new class extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('category_id')->references('id')->on('categories')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('category_id')
+                ->constrained('categories')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+                
             $table->text('description')->nullable();
             $table->decimal('base_price', 10, 2);
             $table->integer('estimated_duration')->nullable();

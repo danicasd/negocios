@@ -13,8 +13,15 @@ return new class extends Migration
     {
         Schema::create('booking_options', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('booking_id')->references('id')->on('bookings')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('service_option_id')->references('id')->on('service_options')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('booking_id')
+                ->constrained('bookings')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('service_option_id')
+                ->constrained('service_options')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            
             $table->string('option_name', 45);
             $table->decimal('extra_price', 10, 2);
             $table->timestamps();

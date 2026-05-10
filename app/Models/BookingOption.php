@@ -7,28 +7,30 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Payment extends Model
+class BookingOption extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'booking_id',
-        'type',
-        'payment_method',
-        'amount',
-        'status',
-        'transaction_reference',
-        'paid_at',
+        'service_option_id',
+        'option_name',
+        'extra_price',
     ];
 
     protected $casts = [
-        'amount' => 'decimal:2',
-        'paid_at' => 'datetime',
+        'extra_price' => 'decimal:2',
     ];
 
-    //Relacion uno a uno 
+    //Relación uno a muchos inversa
     public function booking()
     {
         return $this->belongsTo(Booking::class);
+    }
+
+    //Relación uno a muchos inversa
+    public function serviceOption()
+    {
+        return $this->belongsTo(ServiceOption::class);
     }
 }

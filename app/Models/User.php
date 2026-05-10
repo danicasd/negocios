@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Models;
+use App\Models\Address;
+use App\Models\Booking;
+use App\Models\Review;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
@@ -22,7 +25,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'status',
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -45,5 +51,23 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    //Relación uno a muchos
+     public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    //Relación uno a muchos
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    //Relación uno a muchos
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 }

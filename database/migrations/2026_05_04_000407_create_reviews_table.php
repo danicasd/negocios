@@ -13,8 +13,17 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('booking_id')->references('id')->on('bookings')->unique()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('user_id')->references('id')->on('users')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('booking_id')
+                ->constrained('bookings')
+                ->unique()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();    
+            
             $table->unsignedTinyInteger('rating');
             $table->text('comment')->nullable();
             $table->boolean('status')->default(true);

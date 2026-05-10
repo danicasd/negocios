@@ -13,12 +13,28 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->references('id')->on('users')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('service_id')->references('id')->on('services')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('address_id')->references('id')->on('addresses')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('service_id')
+                ->constrained('services')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('address_id')
+                ->constrained('addresses')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+
             $table->dateTime('scheduled_at');
 
             $table->string('status', 45)->default('pendiente');
+            $table->enum('payment_status', [
+                'pending_deposit',
+                'deposit_paid',
+                'paid',
+                'refunded',
+            ])->default('pending_deposit');
 
             $table->decimal('base_price', 10, 2);
             $table->decimal('extra_total', 10, 2)->default(0);
@@ -26,7 +42,11 @@ return new class extends Migration
 
             $table->text('notes')->nullable();
 
-            $table->foreignId('technician_id')->references('id')->on('technicians')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('technician_id')
+                ->nullable()
+                ->constrained('technicians')
+                ->nullOnDelete()
+                ->cascadeOnUpdate();
             $table->text('cancellation_reason')->nullable();
             $table->dateTime('cancelled_at')->nullable();
 
