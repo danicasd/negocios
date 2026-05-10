@@ -202,7 +202,7 @@
 
                         <p class="text-xs text-yellow-800 leading-relaxed">
                             El anticipo garantiza la reserva del servicio y la asignación del técnico.
-                            Las cancelaciones o reprogramaciones deben realizarse con al menos 48 horas
+                            Las cancelaciones o reprogramaciones deben realizarse con al menos 24 horas
                             de anticipación para aplicar al reembolso. Si el técnico acude al domicilio
                             y el cliente no se encuentra disponible, el anticipo no será reembolsable.
                         </p>

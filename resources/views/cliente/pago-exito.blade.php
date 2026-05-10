@@ -160,7 +160,7 @@
 
                 </a>
 
-                <a href="{{ route('dashboard') }}"
+                <a href="{{ route('cliente.mis-servicios') }}"
                    class="px-8 py-4 border border-gray-300 text-gray-700 rounded-2xl font-semibold hover:bg-gray-50 transition text-center">
 
                     Ver mis servicios

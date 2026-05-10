@@ -77,9 +77,18 @@ Route::get('/pago/exito/{booking}', [ClienteController::class, 'pagoExito'])
     ->middleware(['auth'])
     ->name('cliente.pago.exito');
 
-Route::get('/mis-servicios', [ClienteController::class, 'misServicios'])
-    ->middleware(['auth'])
-    ->name('cliente.mis-servicios');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/mis-servicios', [ClienteController::class, 'misServicios'])
+        ->name('cliente.mis-servicios');
+    
+    Route::get('/mis-servicios/{id}', [ClienteController::class, 'detalleServicio'])
+    ->name('cliente.servicio.detalle');
+});
+
+Route::patch('/mis-servicios/{id}/cancelar', [ClienteController::class, 'cancelarServicio'])
+    ->name('cliente.servicio.cancelar');
+
+
 
 
 /*

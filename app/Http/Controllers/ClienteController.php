@@ -6,7 +6,8 @@ use App\Models\Service;
 use App\Models\Address;
 use App\Models\Booking;
 use App\Models\Payment;
-
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
@@ -225,5 +226,59 @@ class ClienteController extends Controller
     private function convertirHora24($hora)
     {
         return date('H:i:s', strtotime($hora));
+    }
+
+    public function misServicios()
+    {
+        $bookings = Booking::with([
+                'service',
+                'address',
+                'payments'
+            ])
+            ->where('user_id', Auth::id())
+            ->latest()
+            ->get();
+
+        return view('cliente.mis-servicios', compact('bookings'));
+    }
+
+    public function detalleServicio($id)
+    {
+        $booking = Booking::with([
+                'service',
+                'address',
+                'payments'
+            ])
+            ->where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        return view('cliente.detalle-servicio', compact('booking'));
+    }
+
+    public function cancelarServicio($id)
+    {
+        $booking = Booking::where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        if ($booking->status !== 'pending') {
+            return back()->with('error', 'Este servicio ya no se puede cancelar.');
+        }
+
+        $scheduledAt = Carbon::parse($booking->scheduled_at);
+        $now = Carbon::now();
+
+        if ($scheduledAt->lessThan(now()->addHours(24))) {
+            return back()->with('error', 'Solo puedes cancelar el servicio con al menos 24 horas de anticipación.');
+        }
+
+        $booking->update([
+            'status' => 'cancelled',
+            'cancellation_reason' => 'Cancelado por el cliente',
+            'cancelled_at' => now(),
+        ]);
+
+        return redirect()
+            ->route('cliente.mis-servicios')
+            ->with('success', 'Tu servicio fue cancelado correctamente.');
     }
 }
