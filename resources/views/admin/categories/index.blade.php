@@ -72,14 +72,14 @@
                         </a>
 
                         <form action="{{ route('admin.categories.destroy', $category) }}"
-                              method="POST"
-                              onsubmit="return confirm('¿Seguro que deseas eliminar esta categoría?');">
+                                method="POST"
+                                onsubmit="return confirm('¿Seguro que deseas desactivar esta categoría?');">
                             @csrf
                             @method('DELETE')
 
                             <button type="submit"
                                     class="text-red-600 text-sm font-medium hover:underline">
-                                Eliminar
+                                Desactivar
                             </button>
                         </form>
                     </div>

@@ -112,16 +112,12 @@ class AdminServiceController extends Controller
      */
     public function destroy(Service $service)
     {
-        if ($service->bookings()->count() > 0) {
-            return redirect()
-                ->route('admin.services.index')
-                ->with('error', 'No puedes eliminar un servicio que ya tiene solicitudes asociadas.');
-        }
-
-        $service->delete();
+        $service->update([
+            'status' => false,
+        ]);
 
         return redirect()
             ->route('admin.services.index')
-            ->with('success', 'Servicio eliminado correctamente.');
+            ->with('success', 'Servicio desactivado correctamente.');
     }
 }

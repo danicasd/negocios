@@ -85,16 +85,12 @@ class AdminCategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        if ($category->services()->count() > 0) {
-            return redirect()
-                ->route('admin.categories.index')
-                ->with('error', 'No puedes eliminar una categoría que tiene servicios asociados.');
-        }
-
-        $category->delete();
+        $category->update([
+            'status' => false,
+        ]);
 
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', 'Categoría eliminada correctamente.');
+            ->with('success', 'Categoría desactivada correctamente.');
     }
 }
