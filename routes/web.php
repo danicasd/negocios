@@ -104,23 +104,11 @@ Route::prefix('admin')
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
-        Route::get('/categories', [AdminCategoryController::class, 'index'])
-            ->name('categories.index');
-        
-        Route::get('/categories/create', [AdminCategoryController::class, 'create'])
-            ->name('categories.create');
+        Route::resource('categories', AdminCategoryController::class)
+            ->except(['show']);
 
-        Route::get('/categories/{id}/edit', [AdminCategoryController::class, 'edit'])
-            ->name('categories.edit');
-
-        Route::get('/services', [AdminServiceController::class, 'index'])
-            ->name('services.index');
-        
-        Route::get('/services/create', [AdminServiceController::class, 'create'])
-            ->name('services.create');
-
-        Route::get('/services/{id}/edit', [AdminServiceController::class, 'edit'])
-            ->name('services.edit');
+        Route::resource('services', AdminServiceController::class)
+            ->except(['show']);
 
         Route::get('/technicians', [AdminTechnicianController::class, 'index'])
             ->name('technicians.index');
@@ -140,7 +128,6 @@ Route::prefix('admin')
         Route::get('/users', [AdminUserController::class, 'index'])
             ->name('users.index');
     });
-
 
 
 /*

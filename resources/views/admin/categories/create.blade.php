@@ -18,47 +18,57 @@
             </p>
         </div>
 
-        <form class="space-y-6">
+        <form method="POST" action="{{ route('admin.categories.store') }}" class="space-y-6">
+            @csrf
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                     Nombre de la categoría
                 </label>
+
                 <input type="text"
+                       name="name"
+                       value="{{ old('name') }}"
                        placeholder="Ej. Plomería"
                        class="w-full rounded-lg border-gray-300 text-sm">
+
+                @error('name')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                     Descripción
                 </label>
-                <textarea rows="4"
+
+                <textarea name="description"
+                          rows="4"
                           placeholder="Ej. Servicios relacionados con fugas, tuberías, sanitarios y reparaciones hidráulicas."
-                          class="w-full rounded-lg border-gray-300 text-sm"></textarea>
+                          class="w-full rounded-lg border-gray-300 text-sm">{{ old('description') }}</textarea>
+
+                @error('description')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Ícono o referencia visual
-                    </label>
-                    <input type="text"
-                           placeholder="Ej. Llave inglesa, rayo, escoba..."
-                           class="w-full rounded-lg border-gray-300 text-sm">
-                    <p class="text-xs text-gray-500 mt-1">
-                        Por ahora puedes guardar solo el nombre del ícono, no una imagen.
-                    </p>
-                </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Estado
+                </label>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Estado
-                    </label>
-                    <select class="w-full rounded-lg border-gray-300 text-sm">
-                        <option selected>Activa</option>
-                        <option>Inactiva</option>
-                    </select>
-                </div>
+                <select name="status" class="w-full rounded-lg border-gray-300 text-sm">
+                    <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>
+                        Activa
+                    </option>
+                    <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>
+                        Inactiva
+                    </option>
+                </select>
+
+                @error('status')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="flex flex-col md:flex-row gap-3 justify-end pt-4 border-t">
@@ -67,7 +77,7 @@
                     Cancelar
                 </a>
 
-                <button type="button"
+                <button type="submit"
                         class="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">
                     Guardar categoría
                 </button>

@@ -3,6 +3,18 @@
 @section('title', 'Categorías')
 
 @section('content')
+    @if(session('success'))
+        <div class="mb-4 rounded-lg bg-green-100 text-green-700 px-4 py-3 text-sm">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="mb-4 rounded-lg bg-red-100 text-red-700 px-4 py-3 text-sm">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="bg-white rounded-xl shadow p-6">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <div>
@@ -19,129 +31,64 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <!-- Categoría 1 -->
-            <div class="border border-gray-200 rounded-xl p-5 hover:shadow-md transition">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h4 class="text-lg font-semibold">Plomería</h4>
-                        <p class="text-sm text-gray-500">Servicios relacionados con fugas, tuberías y sanitarios.</p>
+            @forelse($categories as $category)
+                <div class="border border-gray-200 rounded-xl p-5 hover:shadow-md transition">
+                    <div class="flex justify-between items-start mb-4 gap-4">
+                        <div>
+                            <h4 class="text-lg font-semibold">{{ $category->name }}</h4>
+
+                            <p class="text-sm text-gray-500 mt-1">
+                                {{ $category->description ?? 'Sin descripción registrada.' }}
+                            </p>
+                        </div>
+
+                        @if($category->status)
+                            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs whitespace-nowrap">
+                                Activa
+                            </span>
+                        @else
+                            <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs whitespace-nowrap">
+                                Inactiva
+                            </span>
+                        @endif
                     </div>
 
-                    <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
-                        Activa
-                    </span>
-                </div>
+                    <div class="text-sm text-gray-600 mb-4">
+                        <p>
+                            <span class="font-medium">Servicios asociados:</span>
+                            {{ $category->services_count }}
+                        </p>
 
-                <div class="text-sm text-gray-600 mb-4">
-                    <p><span class="font-medium">Servicios asociados:</span> 4</p>
-                    <p><span class="font-medium">Ícono:</span> Llave inglesa</p>
-                </div>
-
-                <div class="flex justify-end gap-3">
-                    <a href="{{ route('admin.categories.edit', 1) }}"
-                       class="text-blue-600 text-sm font-medium hover:underline">
-                        Editar
-                    </a>
-
-                    <button type="button"
-                            class="text-red-600 text-sm font-medium hover:underline">
-                        Desactivar
-                    </button>
-                </div>
-            </div>
-
-            <!-- Categoría 2 -->
-            <div class="border border-gray-200 rounded-xl p-5 hover:shadow-md transition">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h4 class="text-lg font-semibold">Electricidad</h4>
-                        <p class="text-sm text-gray-500">Instalaciones, contactos, apagadores y cableado.</p>
+                        <p>
+                            <span class="font-medium">Creada:</span>
+                            {{ $category->created_at->format('d/m/Y') }}
+                        </p>
                     </div>
 
-                    <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
-                        Activa
-                    </span>
-                </div>
+                    <div class="flex justify-end gap-3">
+                        <a href="{{ route('admin.categories.edit', $category) }}"
+                           class="text-blue-600 text-sm font-medium hover:underline">
+                            Editar
+                        </a>
 
-                <div class="text-sm text-gray-600 mb-4">
-                    <p><span class="font-medium">Servicios asociados:</span> 3</p>
-                    <p><span class="font-medium">Ícono:</span> Rayo</p>
-                </div>
+                        <form action="{{ route('admin.categories.destroy', $category) }}"
+                              method="POST"
+                              onsubmit="return confirm('¿Seguro que deseas eliminar esta categoría?');">
+                            @csrf
+                            @method('DELETE')
 
-                <div class="flex justify-end gap-3">
-                    <a href="{{ route('admin.categories.edit', 2) }}"
-                       class="text-blue-600 text-sm font-medium hover:underline">
-                        Editar
-                    </a>
-
-                    <button type="button"
-                            class="text-red-600 text-sm font-medium hover:underline">
-                        Desactivar
-                    </button>
-                </div>
-            </div>
-
-            <!-- Categoría 3 -->
-            <div class="border border-gray-200 rounded-xl p-5 hover:shadow-md transition">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h4 class="text-lg font-semibold">Limpieza</h4>
-                        <p class="text-sm text-gray-500">Limpieza básica, profunda y mantenimiento del hogar.</p>
+                            <button type="submit"
+                                    class="text-red-600 text-sm font-medium hover:underline">
+                                Eliminar
+                            </button>
+                        </form>
                     </div>
-
-                    <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
-                        Activa
-                    </span>
                 </div>
-
-                <div class="text-sm text-gray-600 mb-4">
-                    <p><span class="font-medium">Servicios asociados:</span> 2</p>
-                    <p><span class="font-medium">Ícono:</span> Escoba</p>
+            @empty
+                <div class="col-span-full text-center py-10 text-gray-500">
+                    No hay categorías registradas.
                 </div>
-
-                <div class="flex justify-end gap-3">
-                    <a href="{{ route('admin.categories.edit', 3) }}"
-                       class="text-blue-600 text-sm font-medium hover:underline">
-                        Editar
-                    </a>
-
-                    <button type="button"
-                            class="text-red-600 text-sm font-medium hover:underline">
-                        Desactivar
-                    </button>
-                </div>
-            </div>
-
-            <!-- Categoría 4 -->
-            <div class="border border-gray-200 rounded-xl p-5 hover:shadow-md transition">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h4 class="text-lg font-semibold">Mantenimiento</h4>
-                        <p class="text-sm text-gray-500">Pintura, reparaciones menores y mejoras generales.</p>
-                    </div>
-
-                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs">
-                        Inactiva
-                    </span>
-                </div>
-
-                <div class="text-sm text-gray-600 mb-4">
-                    <p><span class="font-medium">Servicios asociados:</span> 1</p>
-                    <p><span class="font-medium">Ícono:</span> Herramientas</p>
-                </div>
-
-                <div class="flex justify-end gap-3">
-                    <a href="{{ route('admin.categories.edit', 4) }}"
-                       class="text-blue-600 text-sm font-medium hover:underline">
-                        Editar
-                    </a>
-
-                    <button type="button"
-                            class="text-green-600 text-sm font-medium hover:underline">
-                        Activar
-                    </button>
-                </div>
-            </div>
+            @endforelse
         </div>
     </div>
 @endsection

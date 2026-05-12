@@ -3,6 +3,18 @@
 @section('title', 'Servicios')
 
 @section('content')
+    @if(session('success'))
+        <div class="mb-4 rounded-lg bg-green-100 text-green-700 px-4 py-3 text-sm">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="mb-4 rounded-lg bg-red-100 text-red-700 px-4 py-3 text-sm">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="bg-white rounded-xl shadow p-6">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <div>
@@ -13,8 +25,8 @@
             </div>
 
             <a href="{{ route('admin.services.create') }}"
-                class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
-                    + Agregar servicio
+               class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 text-center">
+                + Agregar servicio
             </a>
         </div>
 
@@ -32,77 +44,69 @@
                 </thead>
 
                 <tbody class="divide-y">
-                    <tr>
-                        <td class="px-4 py-3">
-                            <div>
-                                <p class="font-medium">Reparación de WC</p>
-                                <p class="text-xs text-gray-500">Fugas, ruido o fallas básicas.</p>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3">Plomería</td>
-                        <td class="px-4 py-3">$450 MXN</td>
-                        <td class="px-4 py-3">1 - 2 horas</td>
-                        <td class="px-4 py-3">
-                            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
-                                Activo
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-right space-x-3">
-                            <a href="{{ route('admin.services.edit', 1) }}"
-                                class="text-blue-600 font-medium hover:underline">
-                                    Editar
-                            </a>
-                            <button class="text-red-600 font-medium hover:underline">Desactivar</button>
-                        </td>
-                    </tr>
+                    @forelse($services as $service)
+                        <tr>
+                            <td class="px-4 py-3">
+                                <div>
+                                    <p class="font-medium">{{ $service->name }}</p>
+                                    <p class="text-xs text-gray-500">
+                                        {{ $service->description ?? 'Sin descripción registrada.' }}
+                                    </p>
+                                </div>
+                            </td>
 
-                    <tr>
-                        <td class="px-4 py-3">
-                            <div>
-                                <p class="font-medium">Instalación eléctrica</p>
-                                <p class="text-xs text-gray-500">Contactos, apagadores y cableado básico.</p>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3">Electricidad</td>
-                        <td class="px-4 py-3">$600 MXN</td>
-                        <td class="px-4 py-3">2 - 3 horas</td>
-                        <td class="px-4 py-3">
-                            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
-                                Activo
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-right space-x-3">
-                            <a href="{{ route('admin.services.edit', 2) }}"
-                                class="text-blue-600 font-medium hover:underline">
-                                    Editar
-                            </a>
-                            <button class="text-red-600 font-medium hover:underline">Desactivar</button>
-                        </td>
-                    </tr>
+                            <td class="px-4 py-3">
+                                {{ $service->category->name ?? 'Sin categoría' }}
+                            </td>
 
-                    <tr>
-                        <td class="px-4 py-3">
-                            <div>
-                                <p class="font-medium">Limpieza profunda</p>
-                                <p class="text-xs text-gray-500">Servicio general para casa o departamento.</p>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3">Limpieza</td>
-                        <td class="px-4 py-3">$700 MXN</td>
-                        <td class="px-4 py-3">3 - 4 horas</td>
-                        <td class="px-4 py-3">
-                            <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs">
-                                Inactivo
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-right space-x-3">
-                            <a href="{{ route('admin.services.edit', 3) }}"
-                                class="text-blue-600 font-medium hover:underline">
-                                    Editar
-                            </a>
-                            <button class="text-green-600 font-medium hover:underline">Activar</button>
-                        </td>
-                    </tr>
+                            <td class="px-4 py-3">
+                                ${{ number_format($service->base_price, 2) }} MXN
+                            </td>
+
+                            <td class="px-4 py-3">
+                                {{ $service->estimated_duration ?? 'No definida' }}
+                            </td>
+
+                            <td class="px-4 py-3">
+                                @if($service->status)
+                                    <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
+                                        Activo
+                                    </span>
+                                @else
+                                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs">
+                                        Inactivo
+                                    </span>
+                                @endif
+                            </td>
+
+                            <td class="px-4 py-3 text-right">
+                                <div class="flex justify-end gap-3">
+                                    <a href="{{ route('admin.services.edit', $service) }}"
+                                       class="text-blue-600 font-medium hover:underline">
+                                        Editar
+                                    </a>
+
+                                    <form action="{{ route('admin.services.destroy', $service) }}"
+                                          method="POST"
+                                          onsubmit="return confirm('¿Seguro que deseas eliminar este servicio?');">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit"
+                                                class="text-red-600 font-medium hover:underline">
+                                            Eliminar
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-4 py-10 text-center text-gray-500">
+                                No hay servicios registrados.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

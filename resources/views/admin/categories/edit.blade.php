@@ -12,49 +12,62 @@
 
     <div class="bg-white rounded-xl shadow p-6 max-w-3xl">
         <div class="mb-6">
-            <h3 class="text-xl font-semibold">Editar categoría #{{ $id }}</h3>
+            <h3 class="text-xl font-semibold">Editar categoría #{{ $category->id }}</h3>
             <p class="text-sm text-gray-500">
                 Modifica la información de la categoría seleccionada.
             </p>
         </div>
 
-        <form class="space-y-6">
+        <form method="POST" action="{{ route('admin.categories.update', $category) }}" class="space-y-6">
+            @csrf
+            @method('PUT')
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                     Nombre de la categoría
                 </label>
+
                 <input type="text"
-                       value="Plomería"
+                       name="name"
+                       value="{{ old('name', $category->name) }}"
                        class="w-full rounded-lg border-gray-300 text-sm">
+
+                @error('name')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                     Descripción
                 </label>
-                <textarea rows="4"
-                          class="w-full rounded-lg border-gray-300 text-sm">Servicios relacionados con fugas, tuberías y sanitarios.</textarea>
+
+                <textarea name="description"
+                          rows="4"
+                          class="w-full rounded-lg border-gray-300 text-sm">{{ old('description', $category->description) }}</textarea>
+
+                @error('description')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Ícono o referencia visual
-                    </label>
-                    <input type="text"
-                           value="Llave inglesa"
-                           class="w-full rounded-lg border-gray-300 text-sm">
-                </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Estado
+                </label>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Estado
-                    </label>
-                    <select class="w-full rounded-lg border-gray-300 text-sm">
-                        <option selected>Activa</option>
-                        <option>Inactiva</option>
-                    </select>
-                </div>
+                <select name="status" class="w-full rounded-lg border-gray-300 text-sm">
+                    <option value="1" {{ old('status', $category->status) == 1 ? 'selected' : '' }}>
+                        Activa
+                    </option>
+                    <option value="0" {{ old('status', $category->status) == 0 ? 'selected' : '' }}>
+                        Inactiva
+                    </option>
+                </select>
+
+                @error('status')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="flex flex-col md:flex-row gap-3 justify-end pt-4 border-t">
@@ -63,7 +76,7 @@
                     Cancelar
                 </a>
 
-                <button type="button"
+                <button type="submit"
                         class="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">
                     Guardar cambios
                 </button>
