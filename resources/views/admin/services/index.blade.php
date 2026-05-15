@@ -64,7 +64,7 @@
                             </td>
 
                             <td class="px-4 py-3">
-                                {{ $service->estimated_duration ?? 'No definida' }}
+                                {{ $service->estimated_duration ? $service->estimated_duration . ' min' : 'No definida' }}
                             </td>
 
                             <td class="px-4 py-3">

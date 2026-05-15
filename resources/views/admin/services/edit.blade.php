@@ -85,11 +85,16 @@
                         Duración estimada
                     </label>
 
-                    <input type="text"
-                           name="estimated_duration"
-                           value="{{ old('estimated_duration', $service->estimated_duration) }}"
-                           placeholder="Ej. 1 - 2 horas"
-                           class="w-full rounded-lg border-gray-300 text-sm">
+                    <<input type="number"
+                        name="estimated_duration"
+                        value="{{ old('estimated_duration', $service->estimated_duration) }}"
+                        placeholder="Ej. 90"
+                        min="1"
+                        class="w-full rounded-lg border-gray-300 text-sm">
+
+                    <p class="text-xs text-gray-500 mt-1">
+                        Ingresa la duración aproximada en minutos.
+                    </p>
 
                     @error('estimated_duration')
                         <p class="text-sm text-red-600 mt-1">{{ $message }}</p>

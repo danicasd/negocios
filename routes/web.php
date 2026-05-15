@@ -110,20 +110,23 @@ Route::prefix('admin')
         Route::resource('services', AdminServiceController::class)
             ->except(['show']);
 
-        Route::get('/technicians', [AdminTechnicianController::class, 'index'])
-            ->name('technicians.index');
-        
-        Route::get('/technicians/create', [AdminTechnicianController::class, 'create'])
-            ->name('technicians.create');
-
-        Route::get('/technicians/{id}/edit', [AdminTechnicianController::class, 'edit'])
-            ->name('technicians.edit');
+        Route::resource('technicians', AdminTechnicianController::class)
+            ->except(['show']);
 
         Route::get('/bookings', [AdminBookingController::class, 'index'])
             ->name('bookings.index');
 
-        Route::get('/bookings/{id}', [AdminBookingController::class, 'show'])
+        Route::get('/bookings/{booking}', [AdminBookingController::class, 'show'])
             ->name('bookings.show');
+
+        Route::patch('/bookings/{booking}/assign-technician', [AdminBookingController::class, 'assignTechnician'])
+            ->name('bookings.assign-technician');
+
+        Route::patch('/bookings/{booking}/status', [AdminBookingController::class, 'updateStatus'])
+            ->name('bookings.update-status');
+
+        Route::patch('/bookings/{booking}/cancel', [AdminBookingController::class, 'cancel'])
+            ->name('bookings.cancel');
 
         Route::get('/users', [AdminUserController::class, 'index'])
             ->name('users.index');
