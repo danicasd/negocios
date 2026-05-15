@@ -26,7 +26,7 @@ class AdminBookingController extends Controller
      */
     public function show(Booking $booking)
     {
-        $booking->load(['user', 'service', 'address', 'technician', 'options', 'payment']);
+        $booking->load(['user', 'service', 'address', 'technician', 'options', 'payments']);
 
         $technicians = Technician::where('status', true)
             ->orderBy('name')
