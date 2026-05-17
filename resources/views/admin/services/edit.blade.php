@@ -12,106 +12,129 @@
 
     <div class="bg-white rounded-xl shadow p-6 max-w-4xl">
         <div class="mb-6">
-            <h3 class="text-xl font-semibold">Editar servicio #{{ $id }}</h3>
+            <h3 class="text-xl font-semibold">Editar servicio #{{ $service->id }}</h3>
             <p class="text-sm text-gray-500">
                 Modifica la información del servicio seleccionado.
             </p>
         </div>
 
-        <form class="space-y-6">
+        <form method="POST" action="{{ route('admin.services.update', $service) }}" class="space-y-6">
+            @csrf
+            @method('PUT')
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Nombre -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                         Nombre del servicio
                     </label>
+
                     <input type="text"
-                           value="Reparación de WC"
+                           name="name"
+                           value="{{ old('name', $service->name) }}"
                            class="w-full rounded-lg border-gray-300 text-sm">
+
+                    @error('name')
+                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
+                <!-- Categoría -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                         Categoría
                     </label>
-                    <select class="w-full rounded-lg border-gray-300 text-sm">
-                        <option selected>Plomería</option>
-                        <option>Electricidad</option>
-                        <option>Limpieza</option>
-                        <option>Mantenimiento</option>
-                        <option>Soporte técnico</option>
-                        <option>Seguridad</option>
+
+                    <select name="category_id" class="w-full rounded-lg border-gray-300 text-sm">
+                        <option value="">Seleccionar categoría</option>
+
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}"
+                                {{ old('category_id', $service->category_id) == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
                     </select>
+
+                    @error('category_id')
+                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
+                <!-- Precio base -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                         Precio base
                     </label>
+
                     <input type="number"
-                           value="450"
+                           name="base_price"
+                           value="{{ old('base_price', $service->base_price) }}"
+                           min="0"
+                           step="0.01"
                            class="w-full rounded-lg border-gray-300 text-sm">
+
+                    @error('base_price')
+                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
+                <!-- Duración estimada -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                         Duración estimada
                     </label>
-                    <input type="text"
-                           value="1 - 2 horas"
-                           class="w-full rounded-lg border-gray-300 text-sm">
+
+                    <<input type="number"
+                        name="estimated_duration"
+                        value="{{ old('estimated_duration', $service->estimated_duration) }}"
+                        placeholder="Ej. 90"
+                        min="1"
+                        class="w-full rounded-lg border-gray-300 text-sm">
+
+                    <p class="text-xs text-gray-500 mt-1">
+                        Ingresa la duración aproximada en minutos.
+                    </p>
+
+                    @error('estimated_duration')
+                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
+                <!-- Estado -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                         Estado
                     </label>
-                    <select class="w-full rounded-lg border-gray-300 text-sm">
-                        <option selected>Activo</option>
-                        <option>Inactivo</option>
-                    </select>
-                </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Imagen o referencia visual
-                    </label>
-                    <input type="text"
-                           value="Ícono de plomería"
-                           class="w-full rounded-lg border-gray-300 text-sm">
+                    <select name="status" class="w-full rounded-lg border-gray-300 text-sm">
+                        <option value="1" {{ old('status', $service->status) == 1 ? 'selected' : '' }}>
+                            Activo
+                        </option>
+                        <option value="0" {{ old('status', $service->status) == 0 ? 'selected' : '' }}>
+                            Inactivo
+                        </option>
+                    </select>
+
+                    @error('status')
+                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
+            <!-- Descripción -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                     Descripción
                 </label>
-                <textarea rows="4"
-                          class="w-full rounded-lg border-gray-300 text-sm">Servicio para corregir fugas, ruido constante o fallas básicas en WC.</textarea>
-            </div>
 
-            <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
-                <h4 class="font-semibold mb-3">Opciones de cotización</h4>
+                <textarea name="description"
+                          rows="4"
+                          class="w-full rounded-lg border-gray-300 text-sm">{{ old('description', $service->description) }}</textarea>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <label class="flex items-center gap-2 text-sm">
-                        <input type="checkbox" class="rounded border-gray-300" checked>
-                        Servicio urgente
-                    </label>
-
-                    <label class="flex items-center gap-2 text-sm">
-                        <input type="checkbox" class="rounded border-gray-300" checked>
-                        Complejidad
-                    </label>
-
-                    <label class="flex items-center gap-2 text-sm">
-                        <input type="checkbox" class="rounded border-gray-300">
-                        Ajuste por zona
-                    </label>
-                </div>
-
-                <p class="text-xs text-gray-500 mt-3">
-                    Estas opciones indican qué variables puede seleccionar el cliente al cotizar el servicio.
-                </p>
+                @error('description')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="flex flex-col md:flex-row gap-3 justify-end pt-4 border-t">
@@ -120,7 +143,7 @@
                     Cancelar
                 </a>
 
-                <button type="button"
+                <button type="submit"
                         class="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">
                     Guardar cambios
                 </button>

@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\AdminTechnicianController;
 use App\Http\Controllers\Admin\AdminBookingController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminPaymentController;
+use App\Http\Controllers\Admin\AdminReviewController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -105,48 +107,47 @@ Route::post('/mis-servicios/{id}/review', [ClienteController::class, 'guardarRev
 
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'admin'])
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
-        Route::get('/categories', [AdminCategoryController::class, 'index'])
-            ->name('categories.index');
-        
-        Route::get('/categories/create', [AdminCategoryController::class, 'create'])
-            ->name('categories.create');
+        Route::resource('categories', AdminCategoryController::class)
+            ->except(['show']);
 
-        Route::get('/categories/{id}/edit', [AdminCategoryController::class, 'edit'])
-            ->name('categories.edit');
+        Route::resource('services', AdminServiceController::class)
+            ->except(['show']);
 
-        Route::get('/services', [AdminServiceController::class, 'index'])
-            ->name('services.index');
-        
-        Route::get('/services/create', [AdminServiceController::class, 'create'])
-            ->name('services.create');
-
-        Route::get('/services/{id}/edit', [AdminServiceController::class, 'edit'])
-            ->name('services.edit');
-
-        Route::get('/technicians', [AdminTechnicianController::class, 'index'])
-            ->name('technicians.index');
-        
-        Route::get('/technicians/create', [AdminTechnicianController::class, 'create'])
-            ->name('technicians.create');
-
-        Route::get('/technicians/{id}/edit', [AdminTechnicianController::class, 'edit'])
-            ->name('technicians.edit');
+        Route::resource('technicians', AdminTechnicianController::class)
+            ->except(['show']);
 
         Route::get('/bookings', [AdminBookingController::class, 'index'])
             ->name('bookings.index');
 
-        Route::get('/bookings/{id}', [AdminBookingController::class, 'show'])
+        Route::get('/bookings/{booking}', [AdminBookingController::class, 'show'])
             ->name('bookings.show');
+
+        Route::patch('/bookings/{booking}/assign-technician', [AdminBookingController::class, 'assignTechnician'])
+            ->name('bookings.assign-technician');
+
+        Route::patch('/bookings/{booking}/status', [AdminBookingController::class, 'updateStatus'])
+            ->name('bookings.update-status');
+
+        Route::patch('/bookings/{booking}/cancel', [AdminBookingController::class, 'cancel'])
+            ->name('bookings.cancel');
 
         Route::get('/users', [AdminUserController::class, 'index'])
             ->name('users.index');
-    });
 
+        Route::get('/payments', [AdminPaymentController::class, 'index'])
+            ->name('payments.index');
+
+        Route::get('/reviews', [AdminReviewController::class, 'index'])
+            ->name('reviews.index');
+
+        Route::patch('/reviews/{review}/toggle-status', [AdminReviewController::class, 'toggleStatus'])
+            ->name('reviews.toggle-status');
+    });
 
 
 /*

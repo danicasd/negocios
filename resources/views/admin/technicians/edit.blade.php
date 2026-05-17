@@ -10,137 +10,126 @@
         </a>
     </div>
 
-    <div class="bg-white rounded-xl shadow p-6 max-w-4xl">
+    <div class="bg-white rounded-xl shadow p-6 max-w-3xl">
         <div class="mb-6">
-            <h3 class="text-xl font-semibold">Editar técnico #{{ $id }}</h3>
+            <h3 class="text-xl font-semibold">Editar técnico #{{ $technician->id }}</h3>
             <p class="text-sm text-gray-500">
-                Actualiza la información del técnico, su especialidad, zona de trabajo y disponibilidad.
+                Modifica la información del técnico seleccionado.
             </p>
         </div>
 
-        <form class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Nombre -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Nombre
-                    </label>
-                    <input type="text"
-                           value="Juan"
-                           class="w-full rounded-lg border-gray-300 text-sm">
-                </div>
+        <form method="POST" action="{{ route('admin.technicians.update', $technician) }}" class="space-y-6">
+            @csrf
+            @method('PUT')
 
-                <!-- Apellidos -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Apellidos
-                    </label>
-                    <input type="text"
-                           value="Pérez"
-                           class="w-full rounded-lg border-gray-300 text-sm">
-                </div>
-
-                <!-- Correo -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Correo electrónico
-                    </label>
-                    <input type="email"
-                           value="juan.perez@email.com"
-                           class="w-full rounded-lg border-gray-300 text-sm">
-                </div>
-
-                <!-- Teléfono -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Teléfono
-                    </label>
-                    <input type="text"
-                           value="55 1234 5678"
-                           class="w-full rounded-lg border-gray-300 text-sm">
-                </div>
-
-                <!-- Especialidad -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Especialidad
-                    </label>
-                    <select class="w-full rounded-lg border-gray-300 text-sm">
-                        <option selected>Plomería</option>
-                        <option>Electricidad</option>
-                        <option>Limpieza</option>
-                        <option>Mantenimiento</option>
-                        <option>Soporte técnico</option>
-                        <option>Seguridad</option>
-                    </select>
-                </div>
-
-                <!-- Zona -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Zona de trabajo
-                    </label>
-                    <select class="w-full rounded-lg border-gray-300 text-sm">
-                        <option selected>CDMX Sur</option>
-                        <option>CDMX Norte</option>
-                        <option>CDMX Centro</option>
-                        <option>CDMX Oriente</option>
-                        <option>CDMX Poniente</option>
-                        <option>Estado de México</option>
-                    </select>
-                </div>
-
-                <!-- Días disponibles -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Días disponibles
-                    </label>
-                    <input type="text"
-                           value="Lunes a viernes"
-                           class="w-full rounded-lg border-gray-300 text-sm">
-                </div>
-
-                <!-- Horario -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Horario
-                    </label>
-                    <input type="text"
-                           value="09:00 - 18:00"
-                           class="w-full rounded-lg border-gray-300 text-sm">
-                </div>
-
-                <!-- Estado -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                        Estado
-                    </label>
-                    <select class="w-full rounded-lg border-gray-300 text-sm">
-                        <option selected>Disponible</option>
-                        <option>Ocupado</option>
-                        <option>Inactivo</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Notas -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                    Notas administrativas
+                    Nombre
                 </label>
-                <textarea rows="4"
-                          class="w-full rounded-lg border-gray-300 text-sm"
-                          placeholder="Ejemplo: técnico con experiencia en reparaciones urgentes de plomería.">Técnico con experiencia en reparaciones básicas de plomería y atención a domicilio.</textarea>
+
+                <input type="text"
+                       name="name"
+                       value="{{ old('name', $technician->name) }}"
+                       class="w-full rounded-lg border-gray-300 text-sm">
+
+                @error('name')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
-            <!-- Botones -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Teléfono
+                </label>
+
+                <input type="text"
+                       name="phone"
+                       value="{{ old('phone', $technician->phone) }}"
+                       class="w-full rounded-lg border-gray-300 text-sm">
+
+                @error('phone')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Especialidad
+                </label>
+
+                <select name="speciality" class="w-full rounded-lg border-gray-300 text-sm">
+                    <option value="">Seleccionar servicio</option>
+
+                    @foreach($services as $service)
+                        <option value="{{ $service->name }}"
+                            {{ old('speciality', $technician->speciality) == $service->name ? 'selected' : '' }}>
+                            {{ $service->name }}
+                        </option>
+                    @endforeach
+                </select>
+
+                @error('speciality')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Disponibilidad
+                </label>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    @php
+                        $days = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+                        $currentAvailability = old(
+                            'availability',
+                            $technician->availability ? array_map('trim', explode(',', $technician->availability)) : []
+                        );
+                    @endphp
+
+                    @foreach($days as $day)
+                        <label class="flex items-center gap-2 text-sm border rounded-lg px-3 py-2">
+                            <input type="checkbox"
+                                name="availability[]"
+                                value="{{ $day }}"
+                                class="rounded border-gray-300"
+                                {{ in_array($day, $currentAvailability) ? 'checked' : '' }}>
+                            {{ $day }}
+                        </label>
+                    @endforeach
+                </div>
+
+                @error('availability')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Estado
+                </label>
+
+                <select name="status" class="w-full rounded-lg border-gray-300 text-sm">
+                    <option value="1" {{ old('status', $technician->status) == 1 ? 'selected' : '' }}>
+                        Activo
+                    </option>
+                    <option value="0" {{ old('status', $technician->status) == 0 ? 'selected' : '' }}>
+                        Inactivo
+                    </option>
+                </select>
+
+                @error('status')
+                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
             <div class="flex flex-col md:flex-row gap-3 justify-end pt-4 border-t">
                 <a href="{{ route('admin.technicians.index') }}"
                    class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-100 text-center">
                     Cancelar
                 </a>
 
-                <button type="button"
+                <button type="submit"
                         class="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">
                     Guardar cambios
                 </button>
