@@ -73,13 +73,13 @@
 
                         <form action="{{ route('admin.categories.destroy', $category) }}"
                                 method="POST"
-                                onsubmit="return confirm('¿Seguro que deseas desactivar esta categoría?');">
+                                onsubmit="return confirm('{{ $category->status ? '¿Seguro que deseas desactivar esta categoría?' : '¿Seguro que deseas activar esta categoría?' }}');">
                             @csrf
                             @method('DELETE')
 
                             <button type="submit"
-                                    class="text-red-600 text-sm font-medium hover:underline">
-                                Desactivar
+                                    class="{{ $category->status ? 'text-red-600' : 'text-green-600' }} text-sm font-medium hover:underline">
+                                {{ $category->status ? 'Desactivar' : 'Activar' }}
                             </button>
                         </form>
                     </div>

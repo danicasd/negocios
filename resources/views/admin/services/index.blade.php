@@ -88,13 +88,13 @@
 
                                     <form action="{{ route('admin.services.destroy', $service) }}"
                                             method="POST"
-                                            onsubmit="return confirm('¿Seguro que deseas desactivar este servicio?');">
+                                            onsubmit="return confirm('{{ $service->status ? '¿Seguro que deseas desactivar este servicio?' : '¿Seguro que deseas activar este servicio?' }}');">
                                         @csrf
                                         @method('DELETE')
 
                                         <button type="submit"
-                                                class="text-red-600 font-medium hover:underline">
-                                            Desactivar
+                                                class="{{ $service->status ? 'text-red-600' : 'text-green-600' }} font-medium hover:underline">
+                                            {{ $service->status ? 'Desactivar' : 'Activar' }}
                                         </button>
                                     </form>
                                 </div>

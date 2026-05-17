@@ -113,11 +113,15 @@ class AdminServiceController extends Controller
     public function destroy(Service $service)
     {
         $service->update([
-            'status' => false,
+            'status' => !$service->status,
         ]);
+
+        $message = $service->status
+            ? 'Servicio activado correctamente.'
+            : 'Servicio desactivado correctamente.';
 
         return redirect()
             ->route('admin.services.index')
-            ->with('success', 'Servicio desactivado correctamente.');
+            ->with('success', $message);
     }
 }

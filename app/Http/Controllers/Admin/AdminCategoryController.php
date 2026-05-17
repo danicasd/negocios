@@ -86,11 +86,15 @@ class AdminCategoryController extends Controller
     public function destroy(Category $category)
     {
         $category->update([
-            'status' => false,
+            'status' => !$category->status,
         ]);
+
+        $message = $category->status
+            ? 'Categoría activada correctamente.'
+            : 'Categoría desactivada correctamente.';
 
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', 'Categoría desactivada correctamente.');
+            ->with('success', $message);
     }
 }
