@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Service;
 use App\Models\Technician;
 use App\Models\User;
+use App\Models\Payment;
 
 class AdminDashboardController extends Controller
 {
@@ -20,17 +21,43 @@ class AdminDashboardController extends Controller
 
         $registeredUsers = User::count();
 
+        $totalBookings = Booking::count();
+
+        $completedBookings = Booking::where('status', 'completada')->count();
+
+        $totalRevenue = Payment::where('status', 'paid')->sum('amount');
+
         $latestBookings = Booking::with(['user', 'service', 'technician'])
             ->latest()
             ->take(5)
             ->get();
+
+        $bookingsByStatus = [
+            'Pendientes' => Booking::where('status', 'pendiente')->count(),
+            'Confirmadas' => Booking::where('status', 'confirmada')->count(),
+            'En proceso' => Booking::where('status', 'en_proceso')->count(),
+            'Completadas' => Booking::where('status', 'completada')->count(),
+            'Canceladas' => Booking::where('status', 'cancelada')->count(),
+        ];
+
+        $paymentsByStatus = [
+            'Pendientes' => Payment::where('status', 'pending')->count(),
+            'Pagados' => Payment::where('status', 'paid')->count(),
+            'Fallidos' => Payment::where('status', 'failed')->count(),
+            'Reembolsados' => Payment::where('status', 'refunded')->count(),
+        ];
 
         return view('admin.dashboard.index', compact(
             'pendingBookings',
             'activeServices',
             'availableTechnicians',
             'registeredUsers',
-            'latestBookings'
+            'totalBookings',
+            'completedBookings',
+            'totalRevenue',
+            'latestBookings',
+            'bookingsByStatus',
+            'paymentsByStatus'
         ));
     }
 }
