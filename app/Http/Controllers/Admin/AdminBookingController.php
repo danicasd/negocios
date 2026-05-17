@@ -46,7 +46,7 @@ class AdminBookingController extends Controller
 
         $booking->update([
             'technician_id' => $request->technician_id,
-            'status' => 'confirmada',
+            'status' => 'confirmed',
         ]);
 
         return redirect()
@@ -60,7 +60,7 @@ class AdminBookingController extends Controller
     public function updateStatus(Request $request, Booking $booking)
     {
         $request->validate([
-            'status' => 'required|string|in:pendiente,confirmada,en_proceso,completada,cancelada',
+            'status' => 'required|string|in:pending,confirmed,in_process,completed,cancelled',
         ]);
 
         $booking->update([
@@ -82,7 +82,7 @@ class AdminBookingController extends Controller
         ]);
 
         $booking->update([
-            'status' => 'cancelada',
+            'status' => 'cancelled',
             'cancellation_reason' => $request->cancellation_reason,
             'cancelled_at' => now(),
         ]);

@@ -222,7 +222,7 @@ class ClienteController extends Controller
 
             'scheduled_at' => $agenda['fecha'] . ' ' . $this->convertirHora24($agenda['hora']),
 
-            'status' => 'pendiente',
+            'status' => 'pending',
             'payment_status' => 'deposit_paid',
 
             'base_price' => $cotizacion['precio_base'],
@@ -297,7 +297,7 @@ class ClienteController extends Controller
         $booking = Booking::where('user_id', Auth::id())
             ->findOrFail($id);
 
-        if ($booking->status !== 'pendiente') {
+        if ($booking->status !== 'pending') {
             return back()->with('error', 'Este servicio ya no se puede cancelar.');
         }
 
@@ -309,7 +309,7 @@ class ClienteController extends Controller
         }
 
         $booking->update([
-            'status' => 'cancelada',
+            'status' => 'cancelled',
             'cancellation_reason' => 'Cancelado por el cliente',
             'cancelled_at' => now(),
         ]);

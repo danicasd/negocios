@@ -13,7 +13,7 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
-        $pendingBookings = Booking::where('status', 'pendiente')->count();
+        $pendingBookings = Booking::where('status', 'pending')->count();
 
         $activeServices = Service::where('status', true)->count();
 
@@ -23,7 +23,7 @@ class AdminDashboardController extends Controller
 
         $totalBookings = Booking::count();
 
-        $completedBookings = Booking::where('status', 'completada')->count();
+        $completedBookings = Booking::where('status', 'completed')->count();
 
         $totalRevenue = Payment::where('status', 'paid')->sum('amount');
 
@@ -33,11 +33,11 @@ class AdminDashboardController extends Controller
             ->get();
 
         $bookingsByStatus = [
-            'Pendientes' => Booking::where('status', 'pendiente')->count(),
-            'Confirmadas' => Booking::where('status', 'confirmada')->count(),
-            'En proceso' => Booking::where('status', 'en_proceso')->count(),
-            'Completadas' => Booking::where('status', 'completada')->count(),
-            'Canceladas' => Booking::where('status', 'cancelada')->count(),
+            'Pendientes' => Booking::where('status', 'pending')->count(),
+            'Confirmadas' => Booking::where('status', 'confirmed')->count(),
+            'En proceso' => Booking::where('status', 'in_process')->count(),
+            'Completadas' => Booking::where('status', 'completed')->count(),
+            'Canceladas' => Booking::where('status', 'cancelled')->count(),
         ];
 
         $paymentsByStatus = [
