@@ -24,6 +24,24 @@
 
             </div>
 
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-200 text-green-700 px-5 py-4 rounded-2xl mb-6">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="bg-red-100 border border-red-200 text-red-700 px-5 py-4 rounded-2xl mb-6">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="bg-red-100 border border-red-200 text-red-700 px-5 py-4 rounded-2xl mb-6">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
             {{-- Card principal --}}
             <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
 
@@ -123,6 +141,21 @@
 
                             </div>
                         </div>
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-400 uppercase">
+                                Técnico asignado
+                            </h3>
+
+                            @if($booking->technician)
+                                <p class="text-gray-800 mt-2">
+                                    {{ $booking->technician->name }}
+                                </p>
+                            @else
+                                <p class="text-gray-500 mt-2">
+                                    Aún no se ha asignado un técnico.
+                                </p>
+                            @endif
+                        </div>
 
                     </div>
 
@@ -141,26 +174,61 @@
 
                             <div class="mt-2 space-y-2 text-gray-800">
 
-                                <p>
-                                    Total del servicio:
-                                    <span class="font-semibold">
-                                        ${{ number_format($booking->total, 2) }}
-                                    </span>
-                                </p>
+                                
+                                @if($booking->status === 'completed')
 
-                                <p>
-                                    Anticipo pagado:
-                                    <span class="font-semibold text-green-600">
-                                        ${{ number_format($payment->amount ?? 0, 2) }}
-                                    </span>
-                                </p>
+                                    <p>
+                                        Anticipo pagado:
+                                        <span class="font-semibold text-green-600">
+                                            ${{ number_format($payment->amount ?? 0, 2) }}
+                                        </span>
+                                    </p>
 
-                                <p>
-                                    Saldo pendiente:
-                                    <span class="font-semibold text-orange-600">
-                                        ${{ number_format($remaining, 2) }}
-                                    </span>
-                                </p>
+                                    <p>
+                                        Saldo liquidado:
+                                        <span class="font-semibold text-green-600">
+                                            ${{ number_format($remaining, 2) }}
+                                        </span>
+                                    </p>
+
+                                    <p>
+                                        Total pagado:
+                                        <span class="font-semibold">
+                                            ${{ number_format($booking->total, 2) }}
+                                        </span>
+                                    </p>
+
+                                    <p>
+                                        Estado:
+                                        <span class="font-semibold text-green-600">
+                                            Liquidado
+                                        </span>
+                                    </p>
+
+                                @else
+
+                                    <p>
+                                        Total del servicio:
+                                        <span class="font-semibold">
+                                            ${{ number_format($booking->total, 2) }}
+                                        </span>
+                                    </p>
+
+                                    <p>
+                                        Anticipo pagado:
+                                        <span class="font-semibold text-green-600">
+                                            ${{ number_format($payment->amount ?? 0, 2) }}
+                                        </span>
+                                    </p>
+
+                                    <p>
+                                        Saldo pendiente:
+                                        <span class="font-semibold text-orange-600">
+                                            ${{ number_format($remaining, 2) }}
+                                        </span>
+                                    </p>
+
+                                @endif
 
                             </div>
                         </div>
@@ -224,6 +292,7 @@
                     $canCancel =
                         $booking->status === 'pending'
                         && now()->diffInHours(\Carbon\Carbon::parse($booking->scheduled_at), false) >= 24;
+                        $canReschedule = $canCancel;
                 @endphp
 
                 {{-- Timeline --}}
@@ -297,6 +366,147 @@
                     </div>
                 </div>
 
+                {{-- Reseña del servicio --}}
+                @if($booking->status === 'completed')
+                    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mt-8">
+                        <h2 class="text-xl font-bold text-gray-800">
+                            ¿Cómo calificarías el servicio?
+                        </h2>
+
+                        @if($booking->review)
+                            <div class="mt-4 bg-green-50 border border-green-200 rounded-2xl p-5">
+                                <p class="font-semibold text-green-800">
+                                    Ya calificaste este servicio
+                                </p>
+
+                                <p class="text-yellow-500 text-2xl mt-3">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        @if($i <= $booking->review->rating)
+                                            ★
+                                        @else
+                                            ☆
+                                        @endif
+                                    @endfor
+                                </p>
+
+                                @if($booking->review->comment)
+                                    <p class="text-gray-700 mt-3">
+                                        "{{ $booking->review->comment }}"
+                                    </p>
+                                @endif
+                            </div>
+                        @else
+                            <p class="text-gray-500 mt-2">
+                                Tu opinión nos ayuda a mejorar.
+                            </p>
+
+                            <form method="POST"
+                                action="{{ route('cliente.servicio.review', $booking->id) }}"
+                                class="mt-5 space-y-5">
+                                @csrf
+
+                                <div>
+
+                                    <input type="hidden" name="rating" id="ratingInput" required>
+
+                                    <div class="flex justify-center items-center gap-2 mt-6" id="starContainer">
+
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <button type="button"
+                                                    class="star text-4xl text-gray-300 transition hover:scale-110"
+                                                    data-value="{{ $i }}">
+                                                ★
+                                            </button>
+                                        @endfor
+
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2 mt-8">
+                                        Comentario
+                                    </label>
+
+                                    <textarea name="comment"
+                                            rows="4"
+                                            maxlength="500"
+                                            placeholder="Cuéntanos cómo fue tu experiencia..."
+                                            class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"></textarea>
+                                </div>
+
+                                <div class="flex justify-center mt-8">
+                                    <button type="submit"
+                                            class="bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
+                                        Enviar reseña
+                                    </button>
+                                </div>
+                            </form>
+                        @endif
+                    </div>
+                @endif
+
+                {{-- Reagendar servicio --}}
+                @if($booking->status === 'pending')
+                    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mt-8">
+                        <h2 class="text-xl font-bold text-gray-800">
+                            Reagendar servicio
+                        </h2>
+
+                        @if($canReschedule)
+                            <p class="text-gray-500 mt-2">
+                                Puedes cambiar la fecha y hora de tu servicio al menos 24 horas antes de la fecha programada.
+                            </p>
+
+                            <form method="POST"
+                                action="{{ route('cliente.servicio.reagendar', $booking->id) }}"
+                                class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                                @csrf
+                                @method('PATCH')
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 mb-2">
+                                        Nueva fecha
+                                    </label>
+                                    <input type="date"
+                                        name="new_date"
+                                        min="{{ now()->addDay()->format('Y-m-d') }}"
+                                        class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                        required>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 mb-2">
+                                        Nueva hora
+                                    </label>
+                                    <input type="time"
+                                        name="new_time"
+                                        class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                        required>
+                                </div>
+
+                                <button type="submit"
+                                        class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
+                                    Reagendar
+                                </button>
+                            </form>
+                        @else
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-5 mt-4">
+                                <p class="text-yellow-800 font-medium">
+                                    Este servicio ya no puede reagendarse desde la plataforma porque faltan menos de 24 horas para la fecha programada.
+                                </p>
+
+                                <p class="text-yellow-700 mt-3">
+                                    Si necesitas realizar algún cambio, comunícate con soporte:
+                                </p>
+
+                                <p class="text-yellow-900 font-semibold mt-2">
+                                    📞 55 1234 5678
+                                </p>
+                            </div>
+                        @endif
+                    </div>
+                @endif
+
                 {{-- Cancelar servicio --}}
                 @if($booking->status === 'pending')
                     <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mt-8">
@@ -306,7 +516,7 @@
 
                         @if($canCancel)
                             <p class="text-gray-500 mt-2">
-                                Puedes cancelar este servicio porque aún faltan más de 24 horas para la fecha programada.
+                                Puedes cancelar este servicio al menos 24 horas antes de la fecha programada.
                             </p>
 
                             <form method="POST"
@@ -345,3 +555,32 @@
     </div>
 
 </x-app-layout>
+
+<script>
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('ratingInput');
+
+    stars.forEach((star, index) => {
+
+        star.addEventListener('click', () => {
+
+            const rating = star.dataset.value;
+
+            ratingInput.value = rating;
+
+            stars.forEach((s, i) => {
+
+                if (i < rating) {
+                    s.classList.remove('text-gray-300');
+                    s.classList.add('text-yellow-400');
+                } else {
+                    s.classList.remove('text-yellow-400');
+                    s.classList.add('text-gray-300');
+                }
+
+            });
+
+        });
+
+    });
+</script>

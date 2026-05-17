@@ -90,6 +90,12 @@ Route::middleware(['auth'])->group(function () {
 Route::patch('/mis-servicios/{id}/cancelar', [ClienteController::class, 'cancelarServicio'])
     ->name('cliente.servicio.cancelar');
 
+Route::patch('/mis-servicios/{id}/reagendar', [ClienteController::class, 'reagendarServicio'])
+    ->name('cliente.servicio.reagendar');
+
+Route::post('/mis-servicios/{id}/review', [ClienteController::class, 'guardarReview'])
+    ->name('cliente.servicio.review');
+
 
 
 

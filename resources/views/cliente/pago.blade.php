@@ -28,93 +28,33 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                     <!-- Columna izquierda -->
+                    <!-- Columna izquierda -->
                     <div class="lg:col-span-2 space-y-8">
 
-                        <!-- Métodos de pago -->
+                        <!-- Datos de tarjeta -->
                         <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+
+                            <input type="hidden" name="payment_method" value="card">
 
                             <h2 class="text-3xl font-bold text-gray-900 mb-2">
                                 Método de pago
                             </h2>
 
                             <p class="text-gray-500 mb-8">
-                                Elige cómo deseas realizar el anticipo de confirmación.
+                                Ingresa los datos de tu tarjeta para confirmar tu reserva.
                             </p>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                                <!-- Tarjeta -->
-                                <label class="border-2 border-blue-600 bg-blue-50 rounded-2xl p-6 cursor-pointer transition hover:shadow-sm">
-
-                                    <div class="flex items-start gap-4">
-                                        <input type="radio"
-                                               name="payment_method"
-                                               value="card"
-                                               checked
-                                               class="mt-1 text-blue-600 focus:ring-blue-500">
-
-                                        <div>
-                                            <h3 class="text-xl font-bold text-gray-900">
-                                                Tarjeta
-                                            </h3>
-
-                                            <p class="text-gray-500 mt-1">
-                                                Pago simulado con tarjeta.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                </label>
-
-                                <!-- Transferencia -->
-                                <label class="border border-gray-200 rounded-2xl p-6 cursor-pointer transition hover:border-blue-400 hover:shadow-sm">
-
-                                    <div class="flex items-start gap-4">
-                                        <input type="radio"
-                                               name="payment_method"
-                                               value="transfer"
-                                               class="mt-1 text-blue-600 focus:ring-blue-500">
-
-                                        <div>
-                                            <h3 class="text-xl font-bold text-gray-900">
-                                                Transferencia
-                                            </h3>
-
-                                            <p class="text-gray-500 mt-1">
-                                                Pago bancario simulado.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                </label>
-
-                            </div>
-
-                            @error('payment_method')
-                                <p class="text-red-500 text-sm mt-4">
-                                    {{ $message }}
-                                </p>
-                            @enderror
-
-                        </div>
-
-                        <!-- Datos simulados -->
-                        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
-
-                            <h2 class="text-2xl font-bold text-gray-900 mb-6">
-                                Datos de pago
-                            </h2>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                                 <div class="md:col-span-2">
                                     <label class="block text-sm font-semibold text-gray-800 mb-2">
-                                        Número de tarjeta / referencia
+                                        Número de tarjeta
                                     </label>
 
                                     <input type="text"
-                                           placeholder="4242 4242 4242 4242"
-                                           class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                                        name="card_number"
+                                        placeholder="4242 4242 4242 4242"
+                                        class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                                 </div>
 
                                 <div class="md:col-span-2">
@@ -123,8 +63,9 @@
                                     </label>
 
                                     <input type="text"
-                                           placeholder="Nombre del cliente"
-                                           class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                                        name="card_holder"
+                                        placeholder="Nombre del cliente"
+                                        class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                                 </div>
 
                                 <div>
@@ -133,8 +74,9 @@
                                     </label>
 
                                     <input type="text"
-                                           placeholder="MM/AA"
-                                           class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                                        name="card_expiration"
+                                        placeholder="MM/AA"
+                                        class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                                 </div>
 
                                 <div>
@@ -143,8 +85,9 @@
                                     </label>
 
                                     <input type="text"
-                                           placeholder="123"
-                                           class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                                        name="card_cvv"
+                                        placeholder="123"
+                                        class="w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                                 </div>
 
                             </div>
@@ -155,10 +98,15 @@
                                 </p>
                             </div>
 
+                            @error('payment_method')
+                                <p class="text-red-500 text-sm mt-4">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+
                         </div>
 
                     </div>
-
                     <!-- Resumen -->
                     <div>
 
@@ -284,7 +232,7 @@
                                 <p class="text-xs text-yellow-800 leading-relaxed">
                                     El anticipo garantiza la reserva del servicio y la asignación del técnico.
                                     Las cancelaciones o reprogramaciones deben realizarse con al menos
-                                    48 horas de anticipación para aplicar a reembolso.
+                                    24 horas de anticipación para aplicar a reembolso.
                                     Si el técnico acude al domicilio y el cliente no se encuentra disponible,
                                     el anticipo no será reembolsable.
                                 </p>

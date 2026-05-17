@@ -32,7 +32,7 @@
                         Cuando solicites un servicio, aparecerá aquí.
                     </p>
 
-                    <a href="{{ route('servicios') }}"
+                    <a href="{{ route('cliente.catalogo') }}"
                        class="inline-block mt-6 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition">
                         Solicitar servicio
                     </a>
@@ -116,8 +116,9 @@
                                             'pending' => 'Pendiente',
                                             'deposit_pending' => 'Anticipo pendiente',
                                             'deposit_paid' => 'Anticipo pagado',
-                                            'paid' => 'Pagado',
+                                            'paid' => 'Liquidado',
                                             'cancelled' => 'Cancelado',
+                                            'refunded' => 'Reembolsado'
                                         ];
 
                                         $paymentStatusText =
@@ -204,20 +205,55 @@
                                             $paymentStatusText =
                                                 $paymentStatusLabels[$payment->status]
                                                 ?? ucfirst($payment->status);
+                                            
+                                            $remainingBalance = $booking->total - $payment->amount;
                                         @endphp
 
-                                        <p class="text-gray-700">
-                                            Anticipo: ${{ number_format($payment->amount, 2) }}
-                                            <br>
+                                        @if($booking->status === 'completed')
 
-                                            Método: {{ $paymentMethodText }}
-                                            <br>
+                                            <p class="text-gray-700">
+                                                Anticipo pagado:
+                                                ${{ number_format($payment->amount, 2) }}
+                                                <br>
 
-                                            Estado: {{ $paymentStatusText }}
-                                            <br>
+                                                Saldo liquidado:
+                                                ${{ number_format($remainingBalance, 2) }}
+                                                <br>
 
-                                            Total: ${{ number_format($booking->total, 2) }}
-                                        </p>
+                                                Total pagado:
+                                                ${{ number_format($booking->total, 2) }}
+                                                <br>
+
+                                                Método:
+                                                {{ $paymentMethodText }}
+                                                <br>
+
+                                                Estado:
+                                                <span class="text-green-600 font-medium">
+                                                    Liquidado
+                                                </span>
+                                            </p>
+
+                                        @else
+
+                                            <p class="text-gray-700">
+                                                Anticipo:
+                                                ${{ number_format($payment->amount, 2) }}
+                                                <br>
+
+                                                Método:
+                                                {{ $paymentMethodText }}
+                                                <br>
+
+                                                Estado:
+                                                {{ $paymentStatusText }}
+                                                <br>
+
+                                                Total:
+                                                ${{ number_format($booking->total, 2) }}
+                                            </p>
+
+                                        @endif
 
                                     @else
                                         <p class="text-gray-700">
@@ -225,6 +261,7 @@
                                         </p>
                                     @endif
                                 </div>
+                                
 
                             </div>
 

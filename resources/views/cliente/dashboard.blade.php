@@ -1,169 +1,274 @@
 <x-app-layout>
     <div class="min-h-screen bg-gray-50 py-10">
-        <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-7xl mx-auto px-4">
 
-            <!-- Bienvenida -->
-            <div class="bg-white rounded-2xl shadow-sm p-8 mb-8">
+            {{-- Header --}}
+            <div class="mb-8">
                 <h1 class="text-3xl font-bold text-gray-800">
-                    Hola, {{ Auth::user()->name }} 👋
+                    Hola, {{ Auth::user()->name }}
                 </h1>
-                <p class="text-gray-600 mt-2">
-                    Bienvenido a tu panel de cliente. Desde aquí puedes solicitar servicios, revisar tus próximos trabajos y consultar tu historial.
+
+                <p class="text-gray-500 mt-2">
+                    Aquí puedes consultar el resumen de tus servicios solicitados.
                 </p>
             </div>
 
-            <!-- Acciones rápidas -->
+            {{-- Cards de resumen --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <h2 class="text-xl font-semibold">Solicitar nuevo servicio</h2>
-                    
-                {{--<a href="{{ url('/servicios') }}"-->
-                   class="bg-blue-600 text-white rounded-2xl p-6 shadow-sm hover:bg-blue-700 transition"> 
-                    <h2 class="text-xl font-semibold">Solicitar nuevo servicio</h2>
-                    <p class="text-blue-100 mt-2">
-                        Explora el catálogo y cotiza el servicio que necesitas.
-                    </p>
-                </a> --}}
-                </div>
-                <h2 class="text-xl font-semibold text-gray-800">Mis servicios</h2>
-                    <p class="text-gray-600 mt-2">
-                        Consulta el estado de tus solicitudes.
-                    </p>
 
-               {{-- <a href="{{ route('cliente.mis-servicios') }}"
-                   class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition border border-gray-100">
-                    <h2 class="text-xl font-semibold text-gray-800">Mis servicios</h2>
-                    <p class="text-gray-600 mt-2">
-                        Consulta el estado de tus solicitudes.
-                    </p>
-                </a> 
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <p class="text-gray-500 font-medium">Servicios pendientes</p>
 
-                <a href="{{ route('cliente.perfil') }}"
-                   class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition border border-gray-100">
-                    <h2 class="text-xl font-semibold text-gray-800">Mi perfil</h2>
-                    <p class="text-gray-600 mt-2">
-                        Revisa tus datos personales.
-                    </p>
-                </a>
-            </div> --}}
-
-            <!-- Próximo servicio -->
-            <div class="bg-white rounded-2xl shadow-sm p-8 mb-8">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-2xl font-bold text-gray-800">
-                        Próximo servicio programado
-                    </h2>
-                </div>
-
-                <div class="border border-gray-100 rounded-xl p-6 bg-gray-50">
-                    <h3 class="text-lg font-semibold text-gray-800">
-                        Limpieza general del hogar
+                    <h3 class="text-4xl font-bold text-yellow-600 mt-3">
+                        {{ $pendingCount }}
                     </h3>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 text-gray-600">
-                        <p>
-                            <span class="font-semibold text-gray-700">Fecha:</span>
-                            15 de mayo de 2026
-                        </p>
-                        <p>
-                            <span class="font-semibold text-gray-700">Hora:</span>
-                            10:00 AM
-                        </p>
-                        <p>
-                            <span class="font-semibold text-gray-700">Estado:</span>
-                            <span class="text-yellow-600 font-semibold">Pendiente</span>
-                        </p>
-                    </div>
-
-                    <div class="mt-5">
-                        <a href="#"
-                           class="inline-block bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition">
-                            Ver detalle
-                        </a>
-                    </div>
                 </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <p class="text-gray-500 font-medium">Servicios completados</p>
+
+                    <h3 class="text-4xl font-bold text-green-600 mt-3">
+                        {{ $completedCount }}
+                    </h3>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <p class="text-gray-500 font-medium">Servicios cancelados</p>
+
+                    <h3 class="text-4xl font-bold text-red-600 mt-3">
+                        {{ $cancelledCount }}
+                    </h3>
+                </div>
+
             </div>
 
-            <!-- Últimos servicios -->
-            <div class="bg-white rounded-2xl shadow-sm p-8">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800">
-                        Últimos servicios solicitados
-                    </h2>
+            {{-- Próximo servicio --}}
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">
+                            Próximo servicio
+                        </h2>
 
-                    {{-- <a href="{{ route('cliente.mis-servicios') }}"
-                       class="text-blue-600 font-semibold hover:underline">
+                        <p class="text-gray-500 mt-1">
+                            Tu servicio más cercano programado.
+                        </p>
+                    </div>
+
+                    <a href="{{ route('cliente.mis-servicios') }}"
+                       class="text-blue-600 font-semibold hover:text-blue-800">
+                        Ver mis servicios
+                    </a>
+                </div>
+
+                @if($nextBooking)
+
+                    @php
+                        $statusLabels = [
+                            'pending' => 'Pendiente',
+                            'confirmed' => 'Confirmado',
+                            'in_progress' => 'En proceso',
+                            'completed' => 'Completado',
+                            'cancelled' => 'Cancelado',
+                        ];
+
+                        $paymentStatusLabels = [
+                            'pending' => 'Pendiente',
+                            'deposit_pending' => 'Anticipo pendiente',
+                            'deposit_paid' => 'Anticipo pagado',
+                            'paid' => 'Pagado',
+                            'cancelled' => 'Cancelado',
+                        ];
+
+                        $statusText =
+                            $statusLabels[$nextBooking->status]
+                            ?? ucfirst(str_replace('_', ' ', $nextBooking->status));
+
+                        $paymentStatusText =
+                            $paymentStatusLabels[$nextBooking->payment_status]
+                            ?? ucfirst(str_replace('_', ' ', $nextBooking->payment_status));
+                    @endphp
+
+                    <div class="border border-gray-100 rounded-2xl p-5 bg-gray-50">
+                        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800">
+                                    {{ $nextBooking->service->name ?? 'Servicio no disponible' }}
+                                </h3>
+
+                                <p class="text-gray-500 mt-1">
+                                    Orden #{{ str_pad($nextBooking->id, 4, '0', STR_PAD_LEFT) }}
+                                </p>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-4 py-1 rounded-full text-sm font-semibold
+                                    @if($nextBooking->status === 'pending') bg-yellow-100 text-yellow-700
+                                    @elseif($nextBooking->status === 'confirmed') bg-blue-100 text-blue-700
+                                    @elseif($nextBooking->status === 'in_progress') bg-orange-100 text-orange-700
+                                    @elseif($nextBooking->status === 'completed') bg-green-100 text-green-700
+                                    @elseif($nextBooking->status === 'cancelled') bg-red-100 text-red-700
+                                    @else bg-gray-100 text-gray-700
+                                    @endif">
+                                    {{ $statusText }}
+                                </span>
+
+                                <span class="px-4 py-1 rounded-full text-sm font-semibold
+                                    @if($nextBooking->payment_status === 'paid') bg-green-100 text-green-700
+                                    @elseif($nextBooking->payment_status === 'deposit_paid') bg-blue-100 text-blue-700
+                                    @elseif($nextBooking->payment_status === 'pending') bg-yellow-100 text-yellow-700
+                                    @else bg-gray-100 text-gray-700
+                                    @endif">
+                                    Pago: {{ $paymentStatusText }}
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 text-sm">
+
+                            <div>
+                                <p class="text-gray-400 font-semibold">Fecha programada</p>
+                                <p class="text-gray-700">
+                                    {{ \Carbon\Carbon::parse($nextBooking->scheduled_at)->format('d/m/Y h:i A') }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p class="text-gray-400 font-semibold">Dirección</p>
+
+                                @if($nextBooking->address)
+                                    <p class="text-gray-700">
+                                        {{ $nextBooking->address->calle }}
+                                        #{{ $nextBooking->address->external_number }},
+                                        Col. {{ $nextBooking->address->colonia }}
+                                    </p>
+                                @else
+                                    <p class="text-gray-700">
+                                        Sin dirección registrada
+                                    </p>
+                                @endif
+                            </div>
+
+                            <div>
+                                <p class="text-gray-400 font-semibold">Total</p>
+                                <p class="text-gray-700">
+                                    ${{ number_format($nextBooking->total, 2) }}
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <div class="mt-6 flex justify-end">
+                            <a href="{{ route('cliente.servicio.detalle', $nextBooking->id) }}"
+                               class="bg-blue-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
+                                Ver detalle
+                            </a>
+                        </div>
+                    </div>
+
+                @else
+                    <div class="bg-gray-50 border border-gray-100 rounded-2xl p-6 text-center">
+                        <h3 class="text-lg font-semibold text-gray-700">
+                            No tienes servicios próximos
+                        </h3>
+
+                        <p class="text-gray-500 mt-2">
+                            Cuando agendes un servicio, aparecerá aquí.
+                        </p>
+
+                        <a href="{{ route('cliente.catalogo') }}"
+                           class="inline-block mt-5 bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
+                            Solicitar servicio
+                        </a>
+                    </div>
+                @endif
+            </div>
+
+            {{-- Últimos servicios solicitados --}}
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">
+                            Últimos servicios solicitados
+                        </h2>
+
+                        <p class="text-gray-500 mt-1">
+                            Consulta tus solicitudes más recientes.
+                        </p>
+                    </div>
+
+                    <a href="{{ route('cliente.mis-servicios') }}"
+                       class="text-blue-600 font-semibold hover:text-blue-800">
                         Ver todos
-                    </a> --}}
+                    </a>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b text-gray-600">
-                                <th class="py-3">Servicio</th>
-                                <th class="py-3">Fecha</th>
-                                <th class="py-3">Total</th>
-                                <th class="py-3">Estado</th>
-                                <th class="py-3">Acción</th>
-                            </tr>
-                        </thead>
+                @if($recentBookings->isEmpty())
+                    <div class="bg-gray-50 border border-gray-100 rounded-2xl p-6 text-center">
+                        <p class="text-gray-500">
+                            Todavía no has solicitado servicios.
+                        </p>
+                    </div>
+                @else
+                    <div class="space-y-4">
+                        @foreach($recentBookings as $booking)
 
-                        <tbody>
-                            <tr class="border-b hover:bg-gray-50">
-                                <td class="py-4 font-medium text-gray-800">Plomería</td>
-                                <td class="py-4 text-gray-600">08 mayo 2026</td>
-                                <td class="py-4 text-gray-600">$450</td>
-                                <td class="py-4">
-                                    <span class="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700">
-                                        Completado
+                            @php
+                                $statusLabels = [
+                                    'pending' => 'Pendiente',
+                                    'confirmed' => 'Confirmado',
+                                    'in_progress' => 'En proceso',
+                                    'completed' => 'Completado',
+                                    'cancelled' => 'Cancelado',
+                                ];
+
+                                $statusText =
+                                    $statusLabels[$booking->status]
+                                    ?? ucfirst(str_replace('_', ' ', $booking->status));
+                            @endphp
+
+                            <div class="border border-gray-100 rounded-2xl p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:border-blue-200 transition">
+
+                                <div>
+                                    <h3 class="font-bold text-gray-800">
+                                        {{ $booking->service->name ?? 'Servicio no disponible' }}
+                                    </h3>
+
+                                    <p class="text-sm text-gray-500 mt-1">
+                                        Orden #{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}
+                                    </p>
+
+                                    <p class="text-sm text-gray-500 mt-1">
+                                        {{ \Carbon\Carbon::parse($booking->scheduled_at)->format('d/m/Y h:i A') }}
+                                    </p>
+                                </div>
+
+                                <div class="flex items-center gap-3">
+                                    <span class="px-4 py-1 rounded-full text-sm font-semibold
+                                        @if($booking->status === 'pending') bg-yellow-100 text-yellow-700
+                                        @elseif($booking->status === 'confirmed') bg-blue-100 text-blue-700
+                                        @elseif($booking->status === 'in_progress') bg-orange-100 text-orange-700
+                                        @elseif($booking->status === 'completed') bg-green-100 text-green-700
+                                        @elseif($booking->status === 'cancelled') bg-red-100 text-red-700
+                                        @else bg-gray-100 text-gray-700
+                                        @endif">
+                                        {{ $statusText }}
                                     </span>
-                                </td>
-                                <td class="py-4">
-                                    <a href="#" class="text-blue-600 font-semibold hover:underline">
-                                        Ver detalle
-                                    </a>
-                                </td>
-                            </tr>
 
-                            <tr class="border-b hover:bg-gray-50">
-                                <td class="py-4 font-medium text-gray-800">Electricidad</td>
-                                <td class="py-4 text-gray-600">02 mayo 2026</td>
-                                <td class="py-4 text-gray-600">$600</td>
-                                <td class="py-4">
-                                    <span class="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700">
-                                        Asignado
-                                    </span>
-                                </td>
-                                <td class="py-4">
-                                    <a href="#" class="text-blue-600 font-semibold hover:underline">
-                                        Ver detalle
+                                    <a href="{{ route('cliente.servicio.detalle', $booking->id) }}"
+                                       class="text-blue-600 font-semibold hover:text-blue-800">
+                                        Ver
                                     </a>
-                                </td>
-                            </tr>
+                                </div>
 
-                            <tr class="hover:bg-gray-50">
-                                <td class="py-4 font-medium text-gray-800">Soporte técnico</td>
-                                <td class="py-4 text-gray-600">25 abril 2026</td>
-                                <td class="py-4 text-gray-600">$500</td>
-                                <td class="py-4">
-                                    <span class="px-3 py-1 rounded-full text-sm bg-red-100 text-red-700">
-                                        Cancelado
-                                    </span>
-                                </td>
-                                <td class="py-4">
-                                    <a href="#" class="text-blue-600 font-semibold hover:underline">
-                                        Ver detalle
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
 
         </div>
     </div>
 </x-app-layout>
-
-
