@@ -12,9 +12,9 @@
                 </p>
             </div>
 
-            <input type="text"
-                   placeholder="Buscar usuario..."
-                   class="rounded-lg border-gray-300 text-sm">
+            <div class="text-sm text-gray-500">
+                Total: {{ $users->count() }} usuarios
+            </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -27,64 +27,56 @@
                         <th class="px-4 py-3">Rol</th>
                         <th class="px-4 py-3">Solicitudes</th>
                         <th class="px-4 py-3">Estado</th>
-                        <th class="px-4 py-3 text-right">Acciones</th>
+                        <th class="px-4 py-3">Registro</th>
                     </tr>
                 </thead>
 
                 <tbody class="divide-y">
-                    <tr>
-                        <td class="px-4 py-3 font-medium">María López</td>
-                        <td class="px-4 py-3">maria.lopez@email.com</td>
-                        <td class="px-4 py-3">55 1234 5678</td>
-                        <td class="px-4 py-3">Cliente</td>
-                        <td class="px-4 py-3">3</td>
-                        <td class="px-4 py-3">
-                            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
-                                Activo
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-right">
-                            <button class="text-blue-600 font-medium hover:underline">
-                                Ver historial
-                            </button>
-                        </td>
-                    </tr>
+                    @forelse($users as $user)
+                        <tr>
+                            <td class="px-4 py-3 font-medium">
+                                {{ $user->name }}
+                            </td>
 
-                    <tr>
-                        <td class="px-4 py-3 font-medium">Carlos Méndez</td>
-                        <td class="px-4 py-3">carlos.mendez@email.com</td>
-                        <td class="px-4 py-3">55 9876 4321</td>
-                        <td class="px-4 py-3">Cliente</td>
-                        <td class="px-4 py-3">1</td>
-                        <td class="px-4 py-3">
-                            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
-                                Activo
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-right">
-                            <button class="text-blue-600 font-medium hover:underline">
-                                Ver historial
-                            </button>
-                        </td>
-                    </tr>
+                            <td class="px-4 py-3">
+                                {{ $user->email }}
+                            </td>
 
-                    <tr>
-                        <td class="px-4 py-3 font-medium">Ana Torres</td>
-                        <td class="px-4 py-3">ana.torres@email.com</td>
-                        <td class="px-4 py-3">55 2468 1357</td>
-                        <td class="px-4 py-3">Cliente</td>
-                        <td class="px-4 py-3">5</td>
-                        <td class="px-4 py-3">
-                            <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs">
-                                Inactivo
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-right">
-                            <button class="text-blue-600 font-medium hover:underline">
-                                Ver historial
-                            </button>
-                        </td>
-                    </tr>
+                            <td class="px-4 py-3">
+                                {{ $user->phone ?? 'No registrado' }}
+                            </td>
+
+                            <td class="px-4 py-3">
+                                Cliente
+                            </td>
+
+                            <td class="px-4 py-3">
+                                {{ $user->bookings_count }}
+                            </td>
+
+                            <td class="px-4 py-3">
+                                @if($user->status)
+                                    <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
+                                        Activo
+                                    </span>
+                                @else
+                                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs">
+                                        Inactivo
+                                    </span>
+                                @endif
+                            </td>
+
+                            <td class="px-4 py-3">
+                                {{ $user->created_at ? $user->created_at->format('d/m/Y') : 'Sin fecha' }}
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="px-4 py-10 text-center text-gray-500">
+                                No hay usuarios registrados.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

@@ -43,10 +43,21 @@
                     Solicitudes
                 </a>
 
+                <a href="{{ route('admin.payments.index') }}"
+                   class="block px-4 py-2 rounded-lg hover:bg-slate-700">
+                   Pagos
+                </a>
+
+                <a href="{{ route('admin.reviews.index') }}"
+                    class="block px-4 py-2 rounded-lg hover:bg-slate-700">
+                    Reseñas
+                </a>
+
                 <a href="{{ route('admin.users.index') }}"
                    class="block px-4 py-2 rounded-lg hover:bg-slate-700">
                     Usuarios
                 </a>
+
             </nav>
 
             <div class="px-4 py-4 border-t border-slate-700">

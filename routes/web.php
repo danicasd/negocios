@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\AdminTechnicianController;
 use App\Http\Controllers\Admin\AdminBookingController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminPaymentController;
+use App\Http\Controllers\Admin\AdminReviewController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -130,6 +132,15 @@ Route::prefix('admin')
 
         Route::get('/users', [AdminUserController::class, 'index'])
             ->name('users.index');
+
+        Route::get('/payments', [AdminPaymentController::class, 'index'])
+            ->name('payments.index');
+
+        Route::get('/reviews', [AdminReviewController::class, 'index'])
+            ->name('reviews.index');
+
+        Route::patch('/reviews/{review}/toggle-status', [AdminReviewController::class, 'toggleStatus'])
+            ->name('reviews.toggle-status');
     });
 
 
