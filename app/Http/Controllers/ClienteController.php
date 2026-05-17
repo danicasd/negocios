@@ -6,6 +6,7 @@ use App\Models\Service;
 use App\Models\Address;
 use App\Models\Booking;
 use App\Models\Payment;
+use App\Models\Review;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -14,7 +15,40 @@ class ClienteController extends Controller
 {
     public function dashboard()
     {
-        return view('cliente.dashboard'); 
+        $userId = Auth::id();
+
+        $nextBooking = Booking::with(['service', 'address', 'payments'])
+            ->where('user_id', $userId)
+            ->whereIn('status', ['pending', 'confirmed', 'in_progress'])
+            ->where('scheduled_at', '>=', now())
+            ->orderBy('scheduled_at', 'asc')
+            ->first();
+
+        $pendingCount = Booking::where('user_id', $userId)
+            ->where('status', 'pending')
+            ->count();
+
+        $completedCount = Booking::where('user_id', $userId)
+            ->where('status', 'completed')
+            ->count();
+
+        $cancelledCount = Booking::where('user_id', $userId)
+            ->where('status', 'cancelled')
+            ->count();
+
+        $recentBookings = Booking::with(['service', 'address', 'payments'])
+            ->where('user_id', $userId)
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('cliente.dashboard', compact(
+            'nextBooking',
+            'pendingCount',
+            'completedCount',
+            'cancelledCount',
+            'recentBookings'
+        ));
     }
 
 
@@ -247,7 +281,9 @@ class ClienteController extends Controller
         $booking = Booking::with([
                 'service',
                 'address',
-                'payments'
+                'payments',
+                'review',
+                'technician'
             ])
             ->where('user_id', Auth::id())
             ->findOrFail($id);
@@ -281,4 +317,74 @@ class ClienteController extends Controller
             ->route('cliente.mis-servicios')
             ->with('success', 'Tu servicio fue cancelado correctamente.');
     }
+
+    public function reagendarServicio(Request $request, $id)
+    {
+        $booking = Booking::where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        if ($booking->status !== 'pending') {
+            return back()->with('error', 'Este servicio ya no se puede reagendar.');
+        }
+
+        $scheduledAt = \Carbon\Carbon::parse($booking->scheduled_at);
+
+        if ($scheduledAt->lessThan(now()->addHours(24))) {
+            return back()->with('error', 'Solo puedes reagendar el servicio con al menos 24 horas de anticipación.');
+        }
+
+        $request->validate([
+            'new_date' => 'required|date|after_or_equal:today',
+            'new_time' => 'required',
+        ]);
+
+        $newScheduledAt = \Carbon\Carbon::parse($request->new_date . ' ' . $request->new_time);
+
+        if ($newScheduledAt->lessThan(now()->addHours(24))) {
+            return back()->with('error', 'La nueva fecha debe tener al menos 24 horas de anticipación.');
+        }
+
+        $booking->update([
+            'scheduled_at' => $newScheduledAt,
+        ]);
+
+        return redirect()
+            ->route('cliente.servicio.detalle', $booking->id)
+            ->with('success', 'Tu servicio fue reagendado correctamente.');
+    }
+
+    public function guardarReview(Request $request, $id)
+    {
+        $booking = Booking::where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        if ($booking->status !== 'completed') {
+            return back()->with('error', 'Sólo puedes calificar servicios completados.');
+        }
+
+        $existingReview = Review::where('booking_id', $booking->id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if ($existingReview) {
+            return back()->with('error', 'Ya calificaste este servicio.');
+        }
+
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:500',
+        ]);
+
+        Review::create([
+            'user_id' => Auth::id(),
+            'booking_id' => $booking->id,
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+            //'status' => true,
+        ]);
+
+        return back()->with('success', 'Gracias por calificar el servicio.');
+    }
+
+
 }
