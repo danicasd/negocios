@@ -101,7 +101,7 @@ Route::patch('/mis-servicios/{id}/cancelar', [ClienteController::class, 'cancela
 
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'admin'])
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');

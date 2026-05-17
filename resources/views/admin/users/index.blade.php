@@ -47,7 +47,7 @@
                             </td>
 
                             <td class="px-4 py-3">
-                                Cliente
+                                {{ ucfirst($user->role ?? 'cliente') }}
                             </td>
 
                             <td class="px-4 py-3">
