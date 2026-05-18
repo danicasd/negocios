@@ -117,6 +117,111 @@
         </div>
     </div>
 
+
+    {{-- Satisfacción del cliente --}}
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+        <div class="bg-gradient-to-br from-yellow-50 to-white rounded-2xl shadow p-6 border border-yellow-100">
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-slate-900">Satisfacción del cliente</h3>
+                    <p class="text-sm text-gray-500">
+                        Promedio de calificaciones recibidas.
+                    </p>
+                </div>
+
+                <div class="w-12 h-12 rounded-2xl bg-yellow-100 flex items-center justify-center text-2xl">
+                    ★
+                </div>
+            </div>
+
+            <div class="flex items-end gap-3 mb-3">
+                <p class="text-5xl font-bold text-slate-900">
+                    {{ $averageRating ? number_format($averageRating, 1) : '0.0' }}
+                </p>
+                <p class="text-sm text-gray-500 mb-2">/ 5.0</p>
+            </div>
+
+            <div class="flex items-center gap-1 text-2xl mb-3">
+                @php
+                    $roundedRating = $averageRating ? round($averageRating) : 0;
+                @endphp
+
+                @for($i = 1; $i <= 5; $i++)
+                    <span class="{{ $i <= $roundedRating ? 'text-yellow-400' : 'text-gray-300' }}">
+                        ★
+                    </span>
+                @endfor
+            </div>
+
+            <p class="text-sm text-gray-500">
+                Basado en <span class="font-semibold text-slate-700">{{ $reviewsCount }}</span>
+                reseñas visibles.
+            </p>
+
+            <a href="{{ route('admin.reviews.index') }}"
+            class="inline-block mt-4 text-sm font-medium text-blue-600 hover:underline">
+                Ver reseñas →
+            </a>
+        </div>
+
+        <div class="xl:col-span-2 bg-white rounded-2xl shadow p-6">
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h3 class="text-lg font-semibold text-slate-900">Últimas reseñas</h3>
+                    <p class="text-sm text-gray-500">
+                        Comentarios recientes de los clientes.
+                    </p>
+                </div>
+
+                <a href="{{ route('admin.reviews.index') }}"
+                class="text-blue-600 text-sm font-medium hover:underline">
+                    Ver todas
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                @forelse($latestReviews as $review)
+                    <div class="border border-gray-200 rounded-2xl p-4 hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-3">
+                            <div>
+                                <p class="font-semibold text-slate-900">
+                                    {{ $review->user->name ?? 'Cliente' }}
+                                </p>
+                                <p class="text-xs text-gray-500">
+                                    {{ $review->booking->service->name ?? 'Servicio no disponible' }}
+                                </p>
+                            </div>
+
+                            <span class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-medium">
+                                {{ $review->rating }}/5
+                            </span>
+                        </div>
+
+                        <div class="flex items-center gap-1 text-sm mb-3">
+                            @for($i = 1; $i <= 5; $i++)
+                                <span class="{{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-300' }}">
+                                    ★
+                                </span>
+                            @endfor
+                        </div>
+
+                        <p class="text-sm text-gray-600 line-clamp-3">
+                            {{ $review->comment ?? 'Sin comentario registrado.' }}
+                        </p>
+
+                        <p class="text-xs text-gray-400 mt-3">
+                            {{ $review->created_at ? $review->created_at->format('d/m/Y') : 'Sin fecha' }}
+                        </p>
+                    </div>
+                @empty
+                    <div class="md:col-span-3 text-center py-8 text-gray-500">
+                        Aún no hay reseñas visibles registradas.
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
     {{-- Últimas solicitudes --}}
     <div class="bg-white rounded-2xl shadow p-6">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">

@@ -76,14 +76,14 @@
                                     </a>
 
                                     <form action="{{ route('admin.technicians.destroy', $technician) }}"
-                                          method="POST"
-                                          onsubmit="return confirm('¿Seguro que deseas desactivar este técnico?');">
+                                            method="POST"
+                                            onsubmit="return confirm('{{ $technician->status ? '¿Seguro que deseas desactivar este técnico?' : '¿Seguro que deseas activar este técnico?' }}');">
                                         @csrf
                                         @method('DELETE')
 
                                         <button type="submit"
-                                                class="text-red-600 font-medium hover:underline">
-                                            Desactivar
+                                                class="{{ $technician->status ? 'text-red-600' : 'text-green-600' }} font-medium hover:underline">
+                                            {{ $technician->status ? 'Desactivar' : 'Activar' }}
                                         </button>
                                     </form>
                                 </div>

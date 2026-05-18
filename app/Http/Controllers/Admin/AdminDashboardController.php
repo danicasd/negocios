@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Models\Technician;
 use App\Models\User;
 use App\Models\Payment;
+use App\Models\Review;
 
 class AdminDashboardController extends Controller
 {
@@ -47,6 +48,16 @@ class AdminDashboardController extends Controller
             'Reembolsados' => Payment::where('status', 'refunded')->count(),
         ];
 
+        $reviewsCount = Review::where('status', true)->count();
+
+        $averageRating = Review::where('status', true)->avg('rating');
+
+        $latestReviews = Review::with(['user', 'booking.service'])
+            ->where('status', true)
+            ->latest()
+            ->take(3)
+            ->get();
+
         return view('admin.dashboard.index', compact(
             'pendingBookings',
             'activeServices',
@@ -57,7 +68,10 @@ class AdminDashboardController extends Controller
             'totalRevenue',
             'latestBookings',
             'bookingsByStatus',
-            'paymentsByStatus'
+            'paymentsByStatus',
+            'reviewsCount',
+            'averageRating',
+            'latestReviews'
         ));
     }
 }

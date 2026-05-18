@@ -85,11 +85,15 @@ class AdminTechnicianController extends Controller
     public function destroy(Technician $technician)
     {
         $technician->update([
-            'status' => false,
+            'status' => !$technician->status,
         ]);
+
+        $message = $technician->status
+            ? 'Técnico activado correctamente.'
+            : 'Técnico desactivado correctamente.';
 
         return redirect()
             ->route('admin.technicians.index')
-            ->with('success', 'Técnico desactivado correctamente.');
+            ->with('success', $message);
     }
 }
