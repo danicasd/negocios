@@ -35,7 +35,7 @@ class AdminDashboardController extends Controller
         $bookingsByStatus = [
             'Pendientes' => Booking::where('status', 'pending')->count(),
             'Confirmadas' => Booking::where('status', 'confirmed')->count(),
-            'En proceso' => Booking::where('status', 'in_process')->count(),
+            'En proceso' => Booking::where('status', 'in_progress')->count(),
             'Completadas' => Booking::where('status', 'completed')->count(),
             'Canceladas' => Booking::where('status', 'cancelled')->count(),
         ];

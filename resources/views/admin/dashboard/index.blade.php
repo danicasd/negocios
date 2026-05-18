@@ -150,20 +150,20 @@
                     @forelse($latestBookings as $booking)
                         @php
                             $statusClasses = [
-                                'pending' => 'bg-yellow-100 text-yellow-700',
-                                'confirmed' => 'bg-green-100 text-green-700',
-                                'in_process' => 'bg-blue-100 text-blue-700',
-                                'completed' => 'bg-slate-100 text-slate-700',
-                                'cancelled' => 'bg-red-100 text-red-700',
-                            ];
+                        'pending' => 'bg-yellow-100 text-yellow-700',
+                        'confirmed' => 'bg-blue-100 text-blue-700',
+                        'in_progress' => 'bg-orange-100 text-orange-700',
+                        'completed' => 'bg-green-100 text-green-700',
+                        'cancelled' => 'bg-red-100 text-red-700',
+                    ];
 
-                            $statusLabels = [
-                                'pending' => 'Pendiente',
-                                'confirmed' => 'Confirmada',
-                                'in_process' => 'En proceso',
-                                'completed' => 'Completada',
-                                'cancelled' => 'Cancelada',
-                            ];
+                    $statusLabels = [
+                        'pending' => 'Pendiente',
+                        'confirmed' => 'Confirmada',
+                        'in_progress' => 'En proceso',
+                        'completed' => 'Completada',
+                        'cancelled' => 'Cancelada',
+                    ];
 
                             $statusClass = $statusClasses[$booking->status] ?? 'bg-gray-100 text-gray-700';
                             $statusLabel = $statusLabels[$booking->status] ?? ucfirst($booking->status);

@@ -25,16 +25,16 @@
     @php
         $statusClasses = [
             'pending' => 'bg-yellow-100 text-yellow-700',
-            'confirmed' => 'bg-green-100 text-green-700',
-            'in_process' => 'bg-blue-100 text-blue-700',
-            'completed' => 'bg-slate-100 text-slate-700',
+            'confirmed' => 'bg-blue-100 text-blue-700',
+            'in_progress' => 'bg-orange-100 text-orange-700',
+            'completed' => 'bg-green-100 text-green-700',
             'cancelled' => 'bg-red-100 text-red-700',
         ];
 
         $statusLabels = [
             'pending' => 'Pendiente',
             'confirmed' => 'Confirmada',
-            'in_process' => 'En proceso',
+            'in_progress' => 'En proceso',
             'completed' => 'Completada',
             'cancelled' => 'Cancelada',
         ];
@@ -238,19 +238,23 @@
                         </label>
 
                         <select name="status" class="w-full rounded-lg border-gray-300 text-sm">
-                            <option value="pending" {{ old('status', $booking->status) == 'pendiente' ? 'selected' : '' }}>
+                            <option value="pending" {{ old('status', $booking->status) == 'pending' ? 'selected' : '' }}>
                                 Pendiente
                             </option>
-                            <option value="confirmed" {{ old('status', $booking->status) == 'confirmada' ? 'selected' : '' }}>
+
+                            <option value="confirmed" {{ old('status', $booking->status) == 'confirmed' ? 'selected' : '' }}>
                                 Confirmada
                             </option>
-                            <option value="in_process" {{ old('status', $booking->status) == 'en_proceso' ? 'selected' : '' }}>
-                                En proceso
+
+                            <option value="in_progress" {{ old('status', $booking->status) == 'in_progress' ? 'selected' : '' }}>
+                                En progreso
                             </option>
-                            <option value="completed" {{ old('status', $booking->status) == 'completada' ? 'selected' : '' }}>
+
+                            <option value="completed" {{ old('status', $booking->status) == 'completed' ? 'selected' : '' }}>
                                 Completada
                             </option>
-                            <option value="cancelled" {{ old('status', $booking->status) == 'cancelada' ? 'selected' : '' }}>
+
+                            <option value="cancelled" {{ old('status', $booking->status) == 'cancelled' ? 'selected' : '' }}>
                                 Cancelada
                             </option>
                         </select>

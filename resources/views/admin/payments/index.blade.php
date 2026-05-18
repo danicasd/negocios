@@ -35,6 +35,48 @@
 
                 <tbody class="divide-y">
                     @forelse($payments as $payment)
+                        @php
+                            $typeLabels = [
+                                'deposit' => 'Anticipo',
+                                'remaining' => 'Pago restante',
+                                'full' => 'Pago completo',
+                                'refund' => 'Reembolso',
+
+                                // Por si en tu BD guardaron el tipo como método:
+                                'card' => 'Tarjeta',
+                                'transfer' => 'Transferencia',
+                                'cash' => 'Efectivo',
+                            ];
+
+                            $methodLabels = [
+                                'card' => 'Tarjeta',
+                                'transfer' => 'Transferencia',
+                                'cash' => 'Efectivo',
+                                'debit_card' => 'Tarjeta de débito',
+                                'credit_card' => 'Tarjeta de crédito',
+                            ];
+
+                            $statusClasses = [
+                                'pending' => 'bg-yellow-100 text-yellow-700',
+                                'paid' => 'bg-green-100 text-green-700',
+                                'failed' => 'bg-red-100 text-red-700',
+                                'refunded' => 'bg-slate-100 text-slate-700',
+                            ];
+
+                            $statusLabels = [
+                                'pending' => 'Pendiente',
+                                'paid' => 'Pagado',
+                                'failed' => 'Fallido',
+                                'refunded' => 'Reembolsado',
+                            ];
+
+                            $typeLabel = $typeLabels[$payment->type] ?? ucfirst(str_replace('_', ' ', $payment->type));
+                            $methodLabel = $methodLabels[$payment->payment_method] ?? ucfirst(str_replace('_', ' ', $payment->payment_method));
+
+                            $statusClass = $statusClasses[$payment->status] ?? 'bg-gray-100 text-gray-700';
+                            $statusLabel = $statusLabels[$payment->status] ?? ucfirst(str_replace('_', ' ', $payment->status));
+                        @endphp
+
                         <tr>
                             <td class="px-4 py-3 font-medium">
                                 #{{ $payment->id }}
@@ -60,11 +102,11 @@
                             </td>
 
                             <td class="px-4 py-3">
-                                {{ ucfirst($payment->type) }}
+                                {{ $typeLabel }}
                             </td>
 
                             <td class="px-4 py-3">
-                                {{ ucfirst($payment->payment_method) }}
+                                {{ $methodLabel }}
                             </td>
 
                             <td class="px-4 py-3">
@@ -72,25 +114,6 @@
                             </td>
 
                             <td class="px-4 py-3">
-                                @php
-                                    $statusClasses = [
-                                        'pending' => 'bg-yellow-100 text-yellow-700',
-                                        'paid' => 'bg-green-100 text-green-700',
-                                        'failed' => 'bg-red-100 text-red-700',
-                                        'refunded' => 'bg-slate-100 text-slate-700',
-                                    ];
-
-                                    $statusLabels = [
-                                        'pending' => 'Pendiente',
-                                        'paid' => 'Pagado',
-                                        'failed' => 'Fallido',
-                                        'refunded' => 'Reembolsado',
-                                    ];
-
-                                    $statusClass = $statusClasses[$payment->status] ?? 'bg-gray-100 text-gray-700';
-                                    $statusLabel = $statusLabels[$payment->status] ?? ucfirst($payment->status);
-                                @endphp
-
                                 <span class="px-3 py-1 rounded-full text-xs {{ $statusClass }}">
                                     {{ $statusLabel }}
                                 </span>

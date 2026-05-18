@@ -60,12 +60,34 @@ class AdminBookingController extends Controller
     public function updateStatus(Request $request, Booking $booking)
     {
         $request->validate([
-            'status' => 'required|string|in:pending,confirmed,in_process,completed,cancelled',
+            'status' => 'required|string|in:pending,confirmed,in_progress,completed,cancelled',
         ]);
 
         $booking->update([
             'status' => $request->status,
         ]);
+
+        if ($request->status === 'completed') {
+            $booking->update([
+                'payment_status' => 'paid',
+            ]);
+
+            $booking->payments()->update([
+                'status' => 'paid',
+                'paid_at' => now(),
+            ]);
+        }
+
+        if ($request->status === 'cancelled') {
+            $booking->update([
+                'payment_status' => 'refunded',
+                'cancelled_at' => now(),
+            ]);
+
+            $booking->payments()->update([
+                'status' => 'refunded',
+            ]);
+        }
 
         return redirect()
             ->route('admin.bookings.show', $booking)
@@ -83,8 +105,13 @@ class AdminBookingController extends Controller
 
         $booking->update([
             'status' => 'cancelled',
+            'payment_status' => 'refunded',
             'cancellation_reason' => $request->cancellation_reason,
             'cancelled_at' => now(),
+        ]);
+
+        $booking->payments()->update([
+            'status' => 'refunded',
         ]);
 
         return redirect()
