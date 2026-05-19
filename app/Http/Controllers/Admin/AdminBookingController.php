@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Technician;
 use Illuminate\Http\Request;
+use App\Mail\BookingConfirmedMail;
+use Illuminate\Support\Facades\Mail;
 
 class AdminBookingController extends Controller
 {
@@ -49,9 +51,15 @@ class AdminBookingController extends Controller
             'status' => 'confirmed',
         ]);
 
+        $booking->load(['user', 'service', 'technician']);
+
+        if ($booking->user && $booking->user->email) {
+            Mail::to($booking->user->email)->send(new BookingConfirmedMail($booking));
+        }
+
         return redirect()
             ->route('admin.bookings.show', $booking)
-            ->with('success', 'Técnico asignado correctamente.');
+            ->with('success', 'Técnico asignado correctamente. Se envió una notificación al cliente.');
     }
 
     /**

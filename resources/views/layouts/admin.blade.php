@@ -73,11 +73,20 @@
 
             </nav>
 
-            <div class="px-4 py-4 border-t border-slate-700">
+            <div class="px-4 py-4 border-t border-slate-700 flex-shrink-0 space-y-2">
                 <a href="{{ route('dashboard') }}"
-                   class="block px-4 py-2 rounded-lg text-sm text-slate-300 hover:bg-slate-700">
+                class="block px-4 py-2 rounded-lg text-sm text-slate-300 hover:bg-slate-700">
                     Ir al panel cliente
                 </a>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <button type="submit"
+                            class="w-full text-left px-4 py-2 rounded-lg text-sm text-red-300 hover:bg-red-500/10 hover:text-red-200">
+                        Cerrar sesión
+                    </button>
+                </form>
             </div>
         </aside>
 
